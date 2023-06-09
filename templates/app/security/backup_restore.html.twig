@@ -1,0 +1,33 @@
+{% extends '_themes/metroui/base.html.twig' %}
+
+{% block title %}Salvar / Restaurar base de datos{% endblock %}
+
+{% block content %}
+
+    <div class="d-flex flex-align-center p-2 bg-white mb-3">
+        <a href="{{ path('app_mod_inventario_almacen_index') }}" class="button square outline"><span class="mif-arrow-left"></span></a>
+        <span class="ml-2 text-leader">Salvar / Restaurar base de datos</span></span>
+    </div>
+
+    <form method="post" action="{{ path('app_database_backup_restore') }}">
+        <div class="bg-white p-3">
+            <h5>Salvar base de datos</h5>
+            <div>
+                El siguiente proceso permitirá descargar una copia de la base de datos, en formato .sql, la cual podrá ser restaurada en caso de ser necesario.
+            </div>
+            <hr>
+            <button class="button primary" type="submit" name="backup_database">Salvar</button>
+
+        </div>
+
+        <div class="bg-white p-3">
+            <h5>Restaurar base de datos</h5>
+            <div>
+                El siguiente proceso permitirá cargar un archivo en formato .sql para hacer una restaura que reemplazará la base de datos actual.
+            </div>
+            <input type="file" data-role="file" data-mode="drop" name="restore_database_file">
+            <hr>
+            <button class="button primary" type="submit" name="restore_database"  onclick="return confirm('¿Está seguro que desea realizar la restaura de la base de datos? Esta operación no podrá ser revertida.')">Restaurar</button>
+        </div>
+    </form>
+{% endblock %}

@@ -1,0 +1,8 @@
+<div class="bg-white">
+    {% import "_themes/metroui/macro.menu_superior.html.twig" as macro %}
+    <ul class="h-menu">
+        {% for enlace in enlaces %}
+            {{ macro.render_node(enlace) }}
+        {% endfor %}
+    </ul>
+</div>

@@ -1,0 +1,130 @@
+{% extends 'mod_ventas/_template.html.twig' %}
+
+{% set title = 'Resumen de ' ~ tipo | tipo_movimiento_identificador_plural_es | lower %}
+
+
+{% block content %}
+    <div class="d-flex flex-align-center flex-justify-between p-2 bg-white mb-3">
+            <span class="ml-2 text-leader">{{ title }}<span class="text-bold"> {{ frecuencia == 'dia' ? fecha : frecuencia == 'mes' ? fecha | fecha_mes_es | capitalize ~ ' ' ~ fecha | date('Y') : fecha | date('Y') }}</span></span>
+            <div class="d-flex">
+                <div data-role="buttongroup" data-targets="a" class="mr-1">
+                    <a href="{{ path('app_mod_ventas_movimiento_resumen', { 'frecuencia': 'dia', 'tipo': tipo, 'fecha' : "now" | date('Ymd') }) }}" class="button{{ frecuencia == 'dia' ? ' active' : '' }}">Resumen diario</a>
+                    <a href="{{ path('app_mod_ventas_movimiento_resumen', {'frecuencia': 'mes', 'tipo': tipo, 'fecha' : "now" | date('Ym')}) }}" class="button{{ frecuencia == 'mes' ? ' active' : '' }}">Resumen mensual</a>
+                    <a href="{{ path('app_mod_ventas_movimiento_resumen', {'frecuencia': 'anno', 'tipo': tipo, 'fecha' : "now" | date('Y')}) }}" class="button{{ frecuencia == 'anno' ? ' active' : '' }}">Resumen anual</a>
+                </div>
+                {{ form_start(form) }}
+                {{ form_widget(form.fecha) }}
+                {{ form_end(form) }}
+                <div class="ml-1">
+                    <script>
+                        function submit_form() {
+                            $('form[name="form"]').submit();
+                        }
+                    </script>
+
+                    {% if frecuencia == 'dia' %}
+                        <a href="{{ path('app_mod_ventas_movimiento_resumen', {'tipo': tipo, 'frecuencia' : frecuencia, 'fecha' : fecha | date_modify("-1 day") | date('Ymd')}) }}" title="Día anterior" class="button square"><span class="mif-arrow-left"></span></a>
+                        <a href="{{ path('app_mod_ventas_movimiento_resumen', {'tipo': tipo, 'frecuencia' : frecuencia, 'fecha' : "now" | date('Ymd')}) }}" title="Hoy" class="button square"><span class="mif-calendar"></span></a>
+                        <a href="{{ path('app_mod_ventas_movimiento_resumen', {'tipo': tipo, 'frecuencia' : frecuencia, 'fecha' : fecha | date_modify("+1 day") | date('Ymd')}) }}" title="Día siguiente" class="button square {% if fecha | date_modify("+1 day") | date > "now" | date %}disabled{% endif %}"><span class="mif-arrow-right"></span></a>
+                    {% elseif frecuencia == 'mes' %}
+                        <a href="{{ path('app_mod_ventas_movimiento_resumen', {'tipo': tipo, 'frecuencia' : frecuencia, 'fecha' : fecha | date_modify("-1 month") | date('Ym')}) }}" title="Mes anterior" class="button square"><span class="mif-arrow-left"></span></a>
+                        <a href="{{ path('app_mod_ventas_movimiento_resumen', {'tipo': tipo, 'frecuencia' : frecuencia, 'fecha' : "now" | date('Ym')}) }}" title="Mes actual" class="button square"><span class="mif-calendar"></span></a>
+                        <a href="{{ path('app_mod_ventas_movimiento_resumen', {'tipo': tipo, 'frecuencia' : frecuencia, 'fecha' : fecha | date_modify("+1 month") | date('Ym')}) }}" title="Mes siguiente" class="button square {% if fecha | date_modify("+1 month") | date('Ym') > "now" | date('Ym') %}disabled{% endif %}"><span class="mif-arrow-right"></span></a>
+                    {% else %}
+                        <a href="{{ path('app_mod_ventas_movimiento_resumen', {'tipo': tipo, 'frecuencia' : frecuencia, 'fecha' : fecha | date_modify("-1 year") | date('Y')}) }}" title="Año anterior" class="button square"><span class="mif-arrow-left"></span></a>
+                        <a href="{{ path('app_mod_ventas_movimiento_resumen', {'tipo': tipo, 'frecuencia' : frecuencia, 'fecha' : "now" | date('Y')}) }}" title="Año actual" class="button square"><span class="mif-calendar"></span></a>
+                        <a href="{{ path('app_mod_ventas_movimiento_resumen', {'tipo': tipo, 'frecuencia' : frecuencia, 'fecha' : fecha | date_modify("+1 year") | date('Y')}) }}" title="Año siguiente" class="button square {% if fecha | date_modify("+1 year") | date('Y') > "now" | date('Y') %}disabled{% endif %}"><span class="mif-arrow-right"></span></a>
+                    {% endif %}
+                    <a href="{{ path('app_mod_inventario_movimiento_resumen_exportar', {'tipo': tipo, 'frecuencia' : frecuencia, 'fecha' : fecha | date( frecuencia == 'dia' ? 'Ymd' : 'Ym')}) }}" title="Exportar en Excel" class="button square info"><span class="mif-file-excel"></span></a>
+                </div>
+            </div>
+
+    </div>
+    {% if tipo == '' %}
+        {% set opciones = ['salidaVentas', 'entradaCompras', 'salidaDevoluciones', 'entradaDevoluciones', 'internoTransferenciasAlmacen', 'internoAjustesInventario'] %}
+    {% else %}
+        {% set opciones = [tipo] %}
+    {% endif %}
+
+    <ul data-role="tabs" data-tabs-type="text" data-expand="true" class="flex-justify-center">
+        {% for opcion in opciones %}
+            <li><a href="#tab_{{ opcion | minusculas_sin_espacio }}">{{ opcion | tipo_movimiento_identificador_plural_es }}</a></li>
+        {% endfor %}
+    </ul>
+
+    {% for opcion in opciones %}
+        <div id="tab_{{ opcion | minusculas_sin_espacio }}" class="mt-3">
+            {% set arr = opciones | filter((v) => v != opcion) %}
+            {% set ultimo = fecha | date_modify('last day of this month')| date('j') %}
+            <div data-role="panel" class="p-3 mb-4">
+                <h5>{{ opcion | tipo_movimiento_identificador_plural_es }}</h5>
+                <table data-horizontal-scroll="true" class="table no-check cell-hover subcompact table-border cell-border">
+                    <thead>
+                    <th>Saldo inicial</th>
+                    <th>U/M</th>
+                    <th>Producto</th>
+                    {% set t = (opcion in ['entradaCompra', 'salidaDevolucion']) ? 'compra' : 'venta' %}
+                    <th class="">Precio {{ t }} CUP</th>
+                    <th>Precio {{ t }} MLC</th>
+                    {% if frecuencia == 'mes' %}
+                        {% for i in 1..ultimo %}
+                            <th>{{ i }}</th>
+                        {% endfor %}
+                    {% elseif frecuencia == 'anno' %}
+                        {% for i in 1..12 %}
+                            <th>{{ i | resumen_mes_es }}</th>
+                        {% endfor %}
+                    {% endif %}
+                    <th>Total {{ opcion | tipo_movimiento_identificador_plural_es }}</th>
+                    {% for op in arr %}
+                        <th>Total {{ op | tipo_movimiento_identificador_plural_es }}</th>
+                    {% endfor %}
+                    <th>Saldo contable</th>
+                    </thead>
+
+                    <tbody>
+{#                    {% for nombre, tipos in tabla %}#}
+{#                        <tr>#}
+{#                            <td>{{ tipos['saldo_inicial'] }}</td>#}
+{#                            <td>{{ tipos['unidad_medida'] }}</td>#}
+{#                            <td>#}
+{#                                <a class="no-wrap" href="{{ path('app_mod_inventario_producto_show', {'id': tipos['id']}) }}">#}
+{#                                    {{ nombre }}#}
+{#                                </a>#}
+{#                            </td>#}
+{#                            <td>#}
+{#                                <div class="no-wrap">#}
+{#                                    <span class="float-right">{{ tipos['precios'][t]['cup'] | number_format(2,'.','')}}</span>#}
+{#                                </div>#}
+{#                            </td>#}
+{#                            <td>#}
+{#                                <div class="no-wrap">#}
+{#                                    <span class="float-right">{{ tipos['precios'][t]['mlc'] | number_format(2,'.','')}}</span>#}
+{#                                </div>#}
+{#                            </td>#}
+{#                            {% if frecuencia == 'mes' %}#}
+{#                                {% for i in 1..ultimo %}#}
+{#                                    {% set f = (fecha | date('Y-m-') ~ i ) | date('Ymd') %}#}
+{#                                    <td>{{ tipos[opcion]['mes'][f] is defined ? tipos[opcion]['mes'][f] : '' }}</td>#}
+{#                                {% endfor %}#}
+{#                            {% elseif frecuencia == 'anno' %}#}
+{#                                {% for i in 1..12 %}#}
+{#                                    {% set f = (fecha | date('Y-') ~ i  ~ '-01') | date('Ym') %}#}
+{#                                    <td>{{ tipos[opcion]['anno'][f] is defined ? tipos[opcion]['anno'][f] : '' }}</td>#}
+{#                                {% endfor %}#}
+{#                            {% endif %}#}
+{#                            <td>{{ tipos['total'][opcion] is defined ? tipos['total'][opcion] : '' }}</td>#}
+{#                            {% for op in arr %}#}
+{#                                <td>{{ tipos['total'][op] is defined ? tipos['total'][op] : '' }}</td>#}
+{#                            {% endfor %}#}
+{#                            <td>#}
+{#                                {{ tipos['saldo_contable'] }}#}
+{#                            </td>#}
+{#                        </tr>#}
+{#                    {% endfor %}#}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

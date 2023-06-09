@@ -1,0 +1,15 @@
+{% extends '_themes/metroui/base.html.twig' %}
+
+{% block title %}Cliente / Proveedor{% endblock %}
+
+{% block content %}
+    <div class="d-flex flex-justify-between mb-3">
+        <h4>Datos del cliente / proveedor</h4>
+        <div class="d-flex flex-justify-between ">
+            <a class="button secondary flex-self-center" href="{{ path('app_cliente_proveedor_index') }}">Cancelar</a>
+        </div>
+    </div>
+    <div class="bg-white p-3">
+        {{ include('_includes/metroui.generic_form.html.twig') }}
+    </div>
+{% endblock %}

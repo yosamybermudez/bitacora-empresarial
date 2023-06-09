@@ -1,0 +1,56 @@
+{% extends 'mod_ventas/_template.html.twig' %}
+
+{% set title = 'Módulo Ventas' %}
+
+{% block content %}
+    <div class="d-flex flex-align-center p-2 bg-white mb-3">
+        <span class="ml-2 text-leader">Tablero <b>{{ title }}</b></span>
+    </div>
+    <div class="bg-white p-3">
+        <div class="row">
+            {% for tipo in tiposMovimiento %}
+                <div class="cell-md-3">
+                    <div class="more-info-box bg-{{ colorList[loop.index0] }} fg-white">
+                        <div class="content">
+                            <h2 class="text-bold mb-0">{{ tipo.data | length }}</h2>
+                            <div>{{ tipo.nombre }}</div>
+                        </div>
+                        <div class="icon">
+                            <span class="mif-{{ tipo.mifIcon ?: 'cart' }}"></span>
+                        </div>
+                        <a href="{{ tipo.enlace }}" class="more"> Más información <span class="mif-arrow-right"></span></a>
+                    </div>
+                </div>
+            {% endfor %}
+            {% for i in tiposMovimiento|length..3 %}
+                <div class="cell-md-3 empty">
+
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="bg-white p-3 mt-3">
+        <div class="row">
+            <div class="cell-md-8">
+                <div data-role="panel"
+                     data-title-caption="Operaciones"
+                     data-title-icon="<span class='mif-apps'></span>"
+                     data-custom-buttons="options"
+                >
+                    <ul>
+                        <li><a href="{{ path('app_mod_ventas_movimiento_salida_venta_new') }}">Registrar venta</a></li>
+                        <li><a href="{{ path('app_mod_ventas_movimiento_salida_venta_rapida_new') }}">Registrar venta rápida</a></li>
+                        <li><a href="{{ path('app_mod_inventario_movimiento_devolucion_cliente_new') }}">Registrar devolución a cliente</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="cell-md-4">
+                <div data-role="panel" class="h-100"
+                     data-title-caption="Otros datos a definir"
+                     data-title-icon="<span class='mif-shopping-basket'></span>">
+                    ...
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

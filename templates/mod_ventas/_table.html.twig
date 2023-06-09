@@ -1,0 +1,69 @@
+<table class="table no-check">
+    <thead>
+    <tr>
+        {% if fecha is defined and not fecha %}
+            <th>Fecha</th>
+        {% endif %}
+        <th>Código</th>
+        <th>Importe CUP</th>
+        <th>Importe MLC</th>
+        <th>Cliente / Proveedor</th>
+        <th>Estado</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for movimiento in movimientos %}
+        <tr>
+            {% if fecha is defined and not fecha %}
+                <td>
+                    {{ movimiento.fecha ? movimiento.fecha | date('d-m-Y') : 'N/E' }}
+                </td>
+            {% endif %}
+            <td>{{ movimiento.codigo }}</td>
+            <td>
+                <span class="float-right">$ {{ movimiento.importeTotalVigenteCup | number_format(2,'.','')}}</span>
+            </td>
+            <td>
+                <span class="float-right">$ {{ movimiento.importeTotalVigenteMlc | number_format(2,'.','')}}</span>
+            </td>
+            <td>{{ movimiento.clienteProveedor ? movimiento.clienteProveedor.nombre : '-' }}</td>
+            <td>
+                {% if movimiento.estado == 'Sin confirmar' %}
+                    {% set bg = 'bg-cyan' %}
+                {% elseif movimiento.estado == 'Confirmado' %}
+                    {% set bg = 'bg-green' %}
+                {% elseif movimiento.estado == 'Cancelado' %}
+                    {% set bg = 'bg-red' %}
+                {% else %}
+                    {% set bg = 'bg-gray' %}
+                {% endif %}
+
+                <code class="{{ bg }} fg-white ml-2">{{ movimiento.estado }}</code>
+            </td>
+            <td>
+                <div class="toolbar float-right">
+                    <a title="Mostrar" class="tool-button primary" href="{{ path('app_mod_inventario_movimiento_show', {'id': movimiento.id}) }}">
+                        <span class="mif-eye"></span>
+                    </a>
+                    {% if movimiento.estado == 'Sin confirmar' %}
+                        <a title="Editar" class="tool-button secondary" href="{{ path('app_mod_inventario_movimiento_edit', {'id': movimiento.id}) }}">
+                            <span class="mif-pencil"></span>
+                        </a>
+                        <a title="Confirmar" class="tool-button success" href="{{ path('app_mod_inventario_movimiento_confirm', {'id': movimiento.id}) }}" onclick="return confirm('¿Está seguro que desea confirmar el movimiento?');">
+                            <span class="mif-checkmark"></span>
+                        </a>
+                        <a title="Cancelar" class="tool-button alert" href="{{ path('app_mod_inventario_movimiento_cancel', {'id': movimiento.id}) }}" onclick="return confirm('¿Está seguro que desea cancelar el movimiento?');">
+                            <span class="mif-cross"></span>
+                        </a>
+                    {% else %}
+                        <a title="Exportar PDF" class="tool-button info" href="{{ path('app_mod_inventario_movimiento_exportar', {'id': movimiento.id}) }}">
+                            <span class="mif-file-download"></span>
+                        </a>
+                    {% endif %}
+                </div>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

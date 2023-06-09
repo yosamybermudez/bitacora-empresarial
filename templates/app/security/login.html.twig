@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="shortcut icon" href="{{ asset('assets/metroui/images/favicon_indigo.ico') }}" type="image/x-icon">
+    <!-- Metro 4 -->
+    <link rel="stylesheet" href="{{ asset('assets/metroui/vendors/metro4/css/metro-all.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/metroui/css/index.css') }}">
+
+    <title>bitácora | Iniciar sesión</title>
+</head>
+<body class="m4-cloak h-vh-100 d-flex flex-justify-center flex-align-center">
+
+<div class="login-box">
+    <form class="bg-white p-4 text-center"
+          method="post"
+          data-role="validator"
+          data-clear-invalid="2000"
+          data-on-error-form="invalidForm"
+    >
+        <h1 class="mt-0">bitácora</h1>
+        <hr>
+        {% if mi_empresa and mi_empresa.logo %}
+            <img class="w-50 p-3" src="{{ asset(vich_uploader_asset(mi_empresa, 'logoFile')) }}">
+        {% else %}
+            <img class="w-50 p-3" src="{{ asset('assets/metroui/images/logo_indigo.png') }}">
+        {% endif %}
+
+        {% if mi_empresa %}<h2 class="text-bold">{{ mi_empresa.nombre }}</h2>{% endif %}
+        <hr>
+        <h2 class="mb-0">Iniciar sesión</h2>
+        <div class="text-muted mb-4">Autentíquese para iniciar su sesión</div>
+        <div class="form-group">
+            <input type="text" data-role="input" placeholder="Usuario" data-append="<span class='mif-user'>" name="_username" data-validate="required">
+            <span class="invalid_feedback">Por favor, especifique su nombre de usuario</span>
+        </div>
+        <div class="form-group">
+            <input type="password" data-role="input" placeholder="Contraseña" data-append="<span class='mif-key'>" name="_password" data-validate="required">
+            <span class="invalid_feedback">Por favor, especifique su contraseña</span>
+        </div>
+        <div class="form-group text-center">
+            <button type="submit" class="button primary w-100">Iniciar sesión</button>
+        </div>
+        {% if license and license.type == 'S' %}
+            <div class="remark info">
+                Está usando una versión de prueba del producto, le quedan <strong>{{ license.days_left }} día{% if license.days_left > 1 %}s{% endif %}</strong>.
+            </div>
+        {% endif %}
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+        <input type="hidden" name="_target_path" value="/account" />
+    </form>
+</div>
+
+
+<script src="{{ asset('assets/metroui/vendors/jquery/jquery-3.4.1.min.js') }}"></script>
+<script src="{{ asset('assets/metroui/vendors/metro4/js/metro.min.js') }}"></script>
+<script>
+    function invalidForm(){
+        var form  = $(this);
+        form.addClass("ani-ring");
+        setTimeout(function(){
+            form.removeClass("ani-ring");
+        }, 1000);
+    }
+</script>
+</body>
+</html>

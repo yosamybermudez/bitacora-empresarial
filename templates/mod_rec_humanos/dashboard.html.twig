@@ -1,0 +1,46 @@
+{% extends 'mod_rec_humanos/_template.html.twig' %}
+
+{% set title = 'Módulo Recursos Humanos' %}
+
+{% block content %}
+    <div class="d-flex flex-align-center p-2 bg-white mb-3">
+        <span class="ml-2 text-leader">Tablero <b>{{ title }}</b></span>
+    </div>
+    <div class="bg-white p-3">
+        <div class="row">
+{#            {% for tipo in tiposMovimiento %}#}
+{#                <div class="cell-md-3">#}
+{#                    <div class="more-info-box bg-{{ colorList[loop.index0] }} fg-white">#}
+{#                        <div class="content">#}
+{#                            <h2 class="text-bold mb-0">{{ tipo.data | length }}</h2>#}
+{#                            <div>{{ tipo.nombre }}</div>#}
+{#                        </div>#}
+{#                        <div class="icon">#}
+{#                            <span class="mif-{{ tipo.mifIcon ?: 'cart' }}"></span>#}
+{#                        </div>#}
+{#                        <a href="{{ tipo.enlace }}" class="more"> Más información <span class="mif-arrow-right"></span></a>#}
+{#                    </div>#}
+{#                </div>#}
+{#            {% endfor %}#}
+        </div>
+        <div class="row">
+            <div class="cell-md-8">
+                <div data-role="panel"
+                     data-title-caption="Operaciones"
+                     data-title-icon="<span class='mif-apps'></span>"
+                     data-custom-buttons="options"
+                >
+                    <ul>
+                    </ul>
+                </div>
+            </div>
+            <div class="cell-md-4">
+                <div data-role="panel" class="h-100"
+                     data-title-caption="Otros datos a definir"
+                     data-title-icon="<span class='mif-shopping-basket'></span>">
+                    ...
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

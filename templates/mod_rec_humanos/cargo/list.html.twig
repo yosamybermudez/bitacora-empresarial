@@ -1,0 +1,48 @@
+{% extends 'mod_rec_humanos/_template.html.twig' %}
+
+{% set title = 'Cargos' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <div class="bg-white p-3">
+        <div class="d-flex flex-align-center bg-white">
+            <a href="{{ path('app_mod_rec_humanos_ajustes') }}" title="Volver al menú"
+               class="button square outline"><span class="mif-arrow-left"></span></a>
+            <span class="ml-2 text-leader">{{ title }}</span>
+            <div class="ml-auto d-flex">
+                <a class="button primary flex-self-center" href="{{ path('app_mod_rec_humanos_cargo_new') }}">Registrar cargo</a>
+            </div>
+        </div>
+    </div>
+    <div class="bg-white p-3">
+        <table class="table no-check">
+            <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Escala salarial</th>
+                <th>Salario escala</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for cargo in cargos %}
+                <tr>
+                    <td>{{ cargo.cargo.nombre }}</td>
+                    <td>{{ cargo.escalaSalarial }}</td>
+                    <td>
+                        <span class="float-right">$ {{ cargo.salarioEscala | number_format(2,'.','')}}</span>
+                    </td>
+                    <td>
+                        <div class="toolbar float-right">
+                            <a title="Mostrar" class="tool-button primary" href="{{ path('app_mod_rec_humanos_cargo_show', {'id': cargo.id}) }}">
+                                <span class="mif-eye"></span>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

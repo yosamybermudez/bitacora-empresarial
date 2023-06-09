@@ -1,0 +1,266 @@
+{% extends '_themes/metroui/base.html.twig' %}
+
+{% block title %}Movimiento{% endblock %}
+
+{% block content %}
+    <div class="d-flex flex-align-center p-2 bg-white mb-3">
+        <a href="{{ path('app_mod_inventario_movimiento_tipo_index', {'tipo' : tipo_movimiento_label | lower }) }}" class="button square outline"><span class="mif-arrow-left"></span></a>
+        <span class="ml-2 text-leader">{{ tipo_movimiento_label }} <span class="text-bold">{{ movimiento.codigo }}</span></span>
+        {% if movimiento.estado == 'Sin confirmar' %}
+            {% set bg = 'bg-cyan' %}
+        {% elseif movimiento.estado == 'Confirmado' %}
+            {% set bg = 'bg-green' %}
+        {% elseif movimiento.estado == 'Cancelado' %}
+            {% set bg = 'bg-red' %}
+        {% else %}
+            {% set bg = 'bg-gray' %}
+        {% endif %}
+        <code class="{{ bg }} fg-white ml-2">{{ movimiento.estado }}</code>
+        <div class="ml-auto">
+            {% set tipo = tipo_movimiento %}
+            {% if tipo == 'VEN' %}
+                <a href="{{ path('app_mod_inventario_movimiento_venta_rapida_new') }}" class="button primary">Registrar venta</a>
+                <a href="{{ path('app_mod_ventas_movimiento_salida_venta_new')}}" class="button primary">Registrar venta rápida</a>
+            {% elseif tipo == 'ENT' %}
+                <a href="{{ path('app_mod_inventario_movimiento_entrada_new')}}" class="button primary">Registrar entrada</a>
+            {% elseif tipo == 'DEV' %}
+                <a href="{{ path('app_mod_inventario_movimiento_devolucion_new')}}"class="button primary">Registrar devolución a proveedor</a>
+            {% elseif tipo == 'RET' %}
+                <a href="{{ path('app_mod_inventario_movimiento_devolucion_cliente_new')}}" class="button primary">Registrar retorno</a>
+            {% elseif tipo == 'TRF' %}
+                <a href="{{ path('app_mod_inventario_movimiento_transferencia_almacen_new')}}"class="button primary">Registrar transferencia entre almacenes</a>
+                <a href="{{ path('app_mod_inventario_movimiento_transferencia_almacen_new')}}"class="button primary">Registrar transferencia entre almacenes</a>
+            {% elseif tipo == 'GAP' %}
+                <a href="{{ path('app_mod_inventario_movimiento_gasto_aporte_new')}}" class="button primary">Registrar gasto de aporte</a>
+            {% elseif tipo == 'AJT' %}
+                <a href="{{ path('app_mod_inventario_movimiento_ajuste_inventario_new')}}"class="button primary">Registrar ajuste de inventario</a>
+            {% endif %}
+
+            {% if movimiento.estado == 'Sin confirmar' %}
+                <a title="Editar" href="{{ path('app_mod_inventario_movimiento_edit', {'id' : movimiento.id }) }}" class="button square secondary"><span class="mif-pencil"></span></a>
+                <a title="Confirmar" href="{{ path('app_mod_inventario_movimiento_confirm', {'id' : movimiento.id }) }}" class="button square success" onclick="return confirm('¿Está seguro que desea confirmar el movimiento?');"><span class="mif-checkmark"></span></a>
+                <a title="Cancelar" href="{{ path('app_mod_inventario_movimiento_cancel', {'id' : movimiento.id }) }}" class="button square alert" onclick="return confirm('¿Está seguro que desea cancelar el movimiento?');"><span class="mif-cross"></span></a>
+            {% endif %}
+            {% if movimiento.estado == 'Confirmado' %}
+                <a title="Exportar" href="{{ path('app_mod_inventario_movimiento_exportar', {'id' : movimiento.id }) }}" class="button square info"><span class="mif-file-download"></span></a>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <div>
+        {% if not movimiento.lite and movimiento.codigo | tipo_movimiento not in ['TRF', 'AJT']%}
+        <div class="row">
+            <div class="cell-lg-4">
+                <div class="h-100" data-role="panel" data-title-caption="{{ cliente_proveedor }}" data-title-icon="<span class='mif-user'>" data-cls-content="p-4 h-100" data-custom-buttons="customerPanelButtons">
+                    {% if movimiento.clienteProveedor %}
+                    <h5 class="mt-0 mb-0">{{ movimiento.clienteProveedor.nombre }}</h5>
+                    <hr>
+                    <dl>
+                        <div class="text-bold">Cliente</div> <div>{{ movimiento.clienteProveedor.nombre ?: 'N/E' }}</div>
+                        <div class="text-bold">Correo electrónico</div> <div>{{ movimiento.clienteProveedor.correosElectronicos ?: 'N/E' }}</div>
+                        <div class="text-bold">Teléfono</div> <div>{{ movimiento.clienteProveedor.telefonos ?: 'N/E' }}</div>
+                        <div class="text-bold">Domicilio</div> <div>{{ movimiento.clienteProveedor.domicilio ?: 'N/E' }}</div>
+                    </dl>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="cell-lg-3">
+                <div class="h-100" data-role="panel" data-title-caption="Datos bancarios" data-title-icon="<span class='mif-dollar'>" data-cls-content="p-4 h-100" data-custom-buttons="shippingPanelButtons">
+                    <h5 class="mt-0 mb-0">Cuenta CUP</h5>
+                    <hr>
+                    <address>
+                        Datos de la cuenta CUP
+                    </address>
+                    <hr>
+                    <h5 class="mt-0 mb-0">Cuenta MLC</h5>
+                    <hr>
+                    <address>
+                        Datos de la cuenta MLC
+                    </address>
+                </div>
+                <br>
+            </div>
+            <div class="cell-lg-5">
+                <div class="h-100" data-role="panel" data-title-caption="Otros datos" data-title-icon="<span class='mif-bookmark'>" data-cls-content="p-4 h-100">
+                    <dl>
+                        <div class="text-bold">Estado</div>
+                        <div>{{ movimiento.estado }}</div>
+                        {% if movimiento.movimientoEntrada and movimiento.movimientoEntrada.almacen %}
+                        <div class="text-bold">Almacén destino</div>
+                        <div>{{ movimiento.movimientoEntrada.almacen.nombre }}</div>
+                        {% endif %}
+                        {% if movimiento.movimientoRetorno and movimiento.movimientoRetorno.almacen %}
+                            <div class="text-bold">Almacén destino</div>
+                            <div>{{ movimiento.movimientoRetorno.almacen.nombre }}</div>
+                        {% endif %}
+                        {% if movimiento.entregadoPorNombre  %}
+                            <div class="text-bold">Entregado por</div>
+                            <div>
+                                {{ movimiento.entregadoPorNombre }}
+                                {% if movimiento.entregadoPorCargo %} / {{ movimiento.entregadoPorCargo }} {% endif %}
+                                {% if movimiento.entregadoPorCI %} / {{ movimiento.entregadoPorCI }} {% endif %}
+                            </div>
+                        {% endif %}
+                        {% if movimiento.transportadoPorNombre  %}
+                            <div class="text-bold">Transportado por</div>
+                            <div>
+                                {{ movimiento.transportadoPorNombre }}
+                                {% if movimiento.transportadoPorCargo %} / {{ movimiento.transportadoPorCargo }} {% endif %}
+                                {% if movimiento.transportadoPorCI %} / {{ movimiento.transportadoPorCI }} {% endif %}
+                            </div>
+                        {% endif %}
+                        {% if movimiento.recibidoPorNombre  %}
+                            <div class="text-bold">Recibido por</div>
+                            <div>
+                                {{ movimiento.recibidoPorNombre }}
+                                {% if movimiento.recibidoPorCargo %} / {{ movimiento.recibidoPorCargo }} {% endif %}
+                                {% if movimiento.recibidoPorCI %} / {{ movimiento.recibidoPorCI }} {% endif %}
+                            </div>
+                        {% endif %}
+                    </dl>
+                    {% if movimiento.descripcion %}
+                        <hr>
+                        <dl>
+                            <div class="text-bold">Descripción</div>
+                            <div>{{ movimiento.descripcion }}</div>
+                        </dl>
+                    {% endif %}
+                    <hr>
+                    <dl>
+                        <div class="text-bold">Estados</div>
+                    </dl>
+                    <table class="table striped subcompact no-metro-ui">
+                        <tbody>
+                        {% for e in movimiento.movimientoEstados %}
+                            <tr>
+                                {% if e.estado == 'Confirmado' %}
+                                    {% set class = 'success' %}
+                                {% elseif e.estado == 'Cancelado' %}
+                                    {% set class = 'alert' %}
+                                {% elseif e.estado == 'Sin confirmar' %}
+                                    {% set class = 'secondary' %}
+                                {% endif %}
+                                <td><code class="{{ class }}">{{ e.estado }}</code></td>
+                                <td class="text-right">{{ e.actualizadoEn | date('d-m-Y h:i:s a') }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="row">
+            <div class="cell-lg-12">
+                <div class="h-100" data-role="panel" data-title-caption="Datos generales" data-title-icon="<span class='mif-user'>" data-cls-content="p-4 h-100" data-custom-buttons="customerPanelButtons">
+                    {% if movimiento.codigo | tipo_movimiento in ['VEN', 'DEV', 'ENT', 'RET', 'GAP'] %}
+                        {% if movimiento.clienteProveedor %}
+                                <div class="text-bold">Cliente</div> <div>{{ movimiento.clienteProveedor.nombre ?: 'N/E' }}</div>
+                                <div class="text-bold">Correo electrónico</div> <div>{{ movimiento.clienteProveedor.correosElectronicos ?: 'N/E' }}</div>
+                                <div class="text-bold">Teléfono</div> <div>{{ movimiento.clienteProveedor.telefonos ?: 'N/E' }}</div>
+                                <div class="text-bold">Domicilio</div> <div>{{ movimiento.clienteProveedor.domicilio ?: 'N/E' }}</div>
+                        {% else %}
+                                <div class="text-bold">Cliente </div> <div>Población</div>
+                        {% endif %}
+                    {% elseif movimiento.codigo | tipo_movimiento in ['AJT'] %}
+                        <div class="text-bold">Motivo del ajuste </div> <div>{{ movimiento.movimientoAjusteInventario.motivo }}</div>
+                    {% elseif movimiento.codigo | tipo_movimiento in ['TRF'] %}
+                        <div class="text-bold">Almacén destino </div> <div>{{ movimiento.movimientoTransferenciaAlmacen.almacen.nombre }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <div class="row">
+            <div class="cell-lg-12">
+                <div class="bg-white p-3">
+                    <table class="table no-metro-ui">
+                        <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>U/M</th>
+                            <th class="text-center">Cantidad</th>
+                            {% if movimiento.codigo | tipo_movimiento not in ['GAP', 'TRF', 'AJT'] %}
+                            <th class="text-right">Precio CUP</th>
+                            <th class="text-right">Precio MLC</th>
+                            <th class="text-right">Importe CUP</th>
+                            <th class="text-right">Importe MLC</th>
+                            {% endif %}
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for productoMovimiento in movimiento.productoMovimientos %}
+                            {% if productoMovimiento.movimiento.codigo | tipo_movimiento in ['ENT', 'DEV'] %}
+                                {% set precioCup = productoMovimiento.precioCupVigente ?: productoMovimiento.producto.precioCompraCup  %}
+                                {% set precioMlc = productoMovimiento.precioMlcVigente ?: productoMovimiento.producto.precioCompraMlc %}
+                            {% else %}
+                                {% set precioCup = productoMovimiento.precioCupVigente ?: productoMovimiento.producto.precioVentaCup  %}
+                                {% set precioMlc = productoMovimiento.precioMlcVigente ?: productoMovimiento.producto.precioVentaMlc %}
+                            {% endif %}
+                            <tr>
+                                <td>
+                                    <a href="{{ path('app_mod_inventario_producto_show', {'id': productoMovimiento.producto.id }) }}">
+                                        {{ productoMovimiento.producto.nombre }}
+                                    </a>
+                                </td>
+                                <td>{{ productoMovimiento.producto.unidadMedida }}</td>
+                                <td class="text-center">{{ productoMovimiento.cantidad }}</td>
+                                {% if movimiento.codigo | tipo_movimiento not in ['GAP', 'TRF', 'AJT'] %}
+                                <td class="text-right">$ {{ precioCup | number_format(2,'.', '') }}</td>
+                                <td class="text-right">$ {{ precioMlc | number_format(2,'.', '') }}</td>
+                                <td class="text-right">$ {{ (precioCup* productoMovimiento.cantidad) | number_format(2,'.', '') }}</td>
+                                <td class="text-right">$ {{ (precioMlc * productoMovimiento.cantidad) | number_format(2,'.', '') }}</td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                        {% for almacenProductoMovimiento in movimiento.almacenProductoMovimientos %}
+                            {% if almacenProductoMovimiento.movimiento.codigo | tipo_movimiento in ['ENT', 'DEV'] %}
+                                {% set precioCup = almacenProductoMovimiento.precioCupVigente ?: almacenProductoMovimiento.almacenProducto.producto.precioCompraCup  %}
+                                {% set precioMlc = almacenProductoMovimiento.precioMlcVigente ?: almacenProductoMovimiento.almacenProducto.producto.precioCompraMlc %}
+                            {% else %}
+                                {% set precioCup = almacenProductoMovimiento.precioCupVigente ?: almacenProductoMovimiento.almacenProducto.producto.precioVentaCup  %}
+                                {% set precioMlc = almacenProductoMovimiento.precioMlcVigente ?: almacenProductoMovimiento.almacenProducto.producto.precioVentaMlc %}
+                            {% endif %}
+                            <tr>
+                                <td>
+                                    <a href="{{ path('app_mod_inventario_producto_show', {'id': almacenProductoMovimiento.almacenProducto.producto.id }) }}">
+                                        {{ almacenProductoMovimiento.almacenProducto.producto.nombre }}
+                                    </a>
+                                </td>
+                                <td>{{ almacenProductoMovimiento.almacenProducto.producto.unidadMedida }}</td>
+                                <td class="text-center">{{ almacenProductoMovimiento.cantidad }}</td>
+                                {% if movimiento.codigo | tipo_movimiento not in ['GAP', 'TRF', 'AJT'] %}
+                                <td class="text-right">$ {{ precioCup | number_format(2,'.', '') }}</td>
+                                <td class="text-right">$ {{ precioMlc | number_format(2,'.', '') }}</td>
+                                <td class="text-right">$ {{ (precioCup* almacenProductoMovimiento.cantidad) | number_format(2,'.', '') }}</td>
+                                <td class="text-right">$ {{ (precioMlc * almacenProductoMovimiento.cantidad) | number_format(2,'.', '') }}</td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                        {% if movimiento.codigo | tipo_movimiento not in ['GAP', 'TRF', 'AJT'] %}
+                        <thead>
+                        <tr class="border-top bd-default">
+                            <td colspan="5" class="text-leader text-right">Total</td>
+                            <td class="text-leader text-right">$ {{ (movimiento.importeTotalVigenteCup) | number_format(2,'.', '') }}</td>
+                            <td class="text-leader text-right">$ {{ (movimiento.importeTotalVigenteMlc) | number_format(2,'.', '') }}</td>
+                        </tr>
+                        </thead>
+                        {% endif %}
+                    </table>
+                    {% if movimiento.codigo | tipo_movimiento not in ['GAP', 'TRF', 'AJT'] %}
+                    <p class="remark info">
+                        {% if movimiento.codigo | tipo_movimiento in ['ENT', 'DEV'] %} {% set tipo = 'compra' %}
+                        {% else %}{% set tipo = 'venta' %}{% endif %}
+                        El presente movimiento es de tipo {{ tipo_movimiento_label }}, los precios reflejados en las columnas "Precio CUP" y "Precio MLC" corresponden al precio de {{ tipo }} de los productos.
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% include('_includes/metroui.entity_metadata.html.twig') with {'entity' : movimiento} %}
+
+{% endblock %}

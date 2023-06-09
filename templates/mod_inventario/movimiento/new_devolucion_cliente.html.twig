@@ -1,0 +1,82 @@
+{% extends '_themes/metroui/base.html.twig' %}
+
+{% macro agregarFilaProductoMovimiento(producto_movimiento_form) %}
+    <tr class="producto-movimiento-fila">
+        <td>{{ form_widget(producto_movimiento_form.producto) }}</td>
+        <td>{{ form_widget(producto_movimiento_form.cantidad) }}</td>
+        <td>{{ form_widget(producto_movimiento_form.eliminar) }}</td>
+    </tr>
+{% endmacro %}
+
+{% import _self as macro %}
+
+{% block title %}{{ app.request.get('_route') | get_action }} movimiento{% endblock %}
+
+{% block content %}
+    {{ form_start(form, { 'attr' : { 'data-role': 'validator' } }) }}
+    <div class="d-flex flex-align-center p-2 bg-white mb-3">
+        <a href="{{ path('app_mod_inventario_movimiento_tipo_index', {'tipo' : 'retornos'}) }}" class="button square outline"><span class="mif-arrow-left"></span></a>
+        <span class="ml-2 text-leader">Datos de la movimiento <span class="text-bold">Retorno de productos (desde cliente)</span></span>
+        <div class="ml-auto">
+            <button type="submit" name="save_add_new" class="button secondary mr-2">{{ button_label|default('Guardar y agregar otro') }}</button>
+            <button type="submit" name="save_confirm_add_new" class="button secondary mr-2">{{ button_label|default('Guardar, confirmar y agregar otro') }}</button>
+            <button type="submit" name="save_confirm" class="button secondary mr-2">{{ button_label|default('Guardar y confirmar') }}</button>
+            <button type="submit" name="save" class="button secondary mr-2">{{ button_label|default('Guardar') }}</button>
+        </div>
+    </div>
+    <div class="bg-white p-3">
+        <div class="row">
+            <div class="cell-md-4 h-100">
+                <h5>Datos generales</h5>
+                {% if form.codigo is defined %}{{ form_row(form.codigo) }}{% endif %}
+                {% if form.fecha is defined %}{{ form_row(form.fecha) }}{% endif %}
+                {% if form.almacen_destino is defined %}{{ form_row(form.almacen_destino) }}{% endif %}
+                {% if form.cliente is defined %}{{ form_row(form.cliente) }}{% endif %}
+                {% if form.formaPago is defined %}{{ form_row(form.formaPago) }}{% endif %}
+                {% if form.descripcion is defined %}{{ form_row(form.descripcion) }}{% endif %}
+            </div>
+            <div class="cell-md-8 h-100 pl-6">
+                <h5>Productos asociados</h5>
+                <table class="table no-fields no-metro-ui">
+                    <thead>
+                    <tr>
+                        <th width="60%">Producto</th>
+                        <th width="10%">Cantidad</th>
+                        <th>
+                            <button type="button" class="button" id="producto-movimiento-fila-agregar">
+                                <span class="mif-add"></span>
+                            </button>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody id="producto-movimiento-contenedor" data-prototype="{{ macro.agregarFilaProductoMovimiento(form.producto_movimientos.vars.prototype)|e('html_attr') }}">
+                    {% for producto_movimiento in form.producto_movimientos %}
+                        {{ macro.agregarFilaProductoMovimiento(producto_movimiento) }}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="cell-md-12">
+                <h5>Otros datos</h5>
+                {{ include('_includes/metroui.entregado_transportado_recibido.html.twig') }}
+            </div>
+        </div>
+
+    </div>
+    {{ form_end(form) }}
+{% endblock %}
+
+{% block bottom_scripts %}
+    <script>
+        $(document).on('change', 'select.producto_nombre', function () {
+            var item = $(this);
+            var input = item.closest('.producto-movimiento-fila').find('input.producto_cantidad');
+            input.focus();
+            input.attr('data-validate', 'required number min=0');
+
+        });
+    </script>
+{% endblock %}
+

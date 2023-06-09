@@ -1,0 +1,41 @@
+.table .data-wrapper {
+  white-space: normal;
+}
+
+.hide-cell,
+.hide-notification{
+  display: none!important;
+}
+
+.second-action.mark-as-unread{
+  background-color: transparent;
+}
+
+.second-action.mark-as-unread.hover{
+  background-color: #00aff0;
+}
+
+.bg-lightGray .avatar.mark-as-unread{
+  border:none;
+}
+
+.bg-lightGray .avatar.mark-as-unread.hover{
+  border: 3px solid #00aff0;
+}
+
+[required="required"]:after{
+  content: '*';
+  color: red;
+  margin-left: 5px;
+}
+
+#side-menu.enlace-agregar-nuevo{
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.metro-input.text-right input{
+  text-align: right;
+}
+

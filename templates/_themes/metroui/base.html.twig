@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en" class=" scrollbar-type-1 sb-cyan">
+<head>
+  {% set colorList = [
+    'cyan',
+    'green',
+    'orange',
+    'red',
+    'amber',
+    'brown',
+    'cobalt'
+  ] %}
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="metro4:init" content="false">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="shortcut icon" href="{{ asset('assets/metroui/images/favicon_indigo.ico') }}" type="image/x-icon">
+  <!-- Metro 4 -->
+  <link rel="stylesheet" href="{{ asset('assets/metroui/vendors/metro4/css/metro-all.min.css') }}">
+  {% block top_styles %}
+
+  {% endblock %}
+  <link rel="stylesheet" href="{{ asset('assets/metroui/css/index.css') }}">
+  <link rel="stylesheet" href="{{ asset('assets/metroui/css/custom.css') }}">
+
+  <title>bitácora  | {% if title is defined %} {{ title }} {% else %} {% block title %} {% endblock %} {% endif %}</title>
+  <script>
+    window.on_page_functions = [];
+  </script>
+  {% block stylesheets %}
+    {{ encore_entry_link_tags('app') }}
+  {% endblock %}
+
+  {% block javascripts %}
+    {{ encore_entry_script_tags('app') }}
+  {% endblock %}
+</head>
+<body class="m4-cloak h-vh-100">
+<div data-role="navview" data-toggle="#paneToggle" data-expand="xl" data-compact="lg" data-active-state="true">
+  <div class="navview-pane">
+    {{ render(path('app_render_sidebar', {'moduleId' : moduloSeleccionado is defined ? moduloSeleccionado : null })) }}
+  </div>
+
+  <div class="navview-content h-100">
+    <div data-role="appbar"  class="bgpos-absolute bg-darkCyan fg-white no-user-select">
+      <div class="app-bar-container mr-auto" id="dropdown_toggle">
+          <div class="app-bar-container">
+
+            {{ render(path('app_render_modules')) }}
+          </div>
+      </div>
+      <a href="#" class="app-bar-item d-block d-none-lg" id="paneToggle"><span class="mif-menu"></span></a>
+      {% if moduloSeleccionado is defined %}
+        <div class="app-bar-container ml-auto mr-auto">
+          <h4 class="m-0 pl-3">
+            {{ render(path('app_render_activated_module_data', {'id' : moduloSeleccionado })) }}
+          </h4>
+        </div>
+      {% endif %}
+      <div class="app-bar-container ml-2">
+        <span>{{ "now" | server_date }}</span> <span id="time-clock">{{ "now" | date('h:i:s A') }}</span>
+      </div>
+      <div class="app-bar-container ml-2">
+        {% if app.request.attributes.get('_route') not in ['_notificacion_listar'] %}
+          {#          {{ render(path('_notifications')) }}#}
+        {% endif %}
+        <div class="app-bar-container">
+          <a id="logged-user-panel-toggle" href="#" class="app-bar-item" id="">
+            {% if app.user and app.user.foto %}
+              <img class="avatar" src="{{ asset(vich_uploader_asset(app.user, 'fotoFile')) }}">
+            {% else %}
+              <img class="avatar" src="{{ asset('assets/images/usuarios/generic_metroui.jpg') }}">
+            {% endif %}
+            <span class="ml-2 app-bar-name">{{ app.user.nombreCompleto }}</span>
+          </a>
+          <div id="logged-user-panel-container" class="user-block shadow-1" data-role="collapse" style="display: none;">
+            <div class="bg-darkCyan fg-white p-2 text-center">
+              {% if app.user and app.user.foto %}
+                <img class="avatar" src="{{ asset(vich_uploader_asset(app.user, 'fotoFile')) }}">
+              {% else %}
+                <img class="avatar" src="{{ asset('assets/images/usuarios/generic_metroui.jpg') }}">
+              {% endif %}
+              <div class="h4 mb-0">{{ app.user.nombreCompleto }}</div>
+              <div>----</div>
+            </div>
+            <div class="bg-white d-flex flex-justify-between flex-equal-items p-2 bg-light">
+              <a href="{{ path('app_usuario_change_password', {'id' : app.user.id }) }}" class="button secondary ml-1">Cambiar contraseña</a>
+              <a href="{{ path('app_logout') }}" class="button bg-red ml-1">Cerrar sesión</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% set link = (app.request.uri|replace({'/':"%47B"}))|replace({'_':"%48A"}) %}
+    {#    {{ render(path('_menu_superior')) }}#}
+    <div id="content-wrapper" class="content-inner h-100 m-3" style="overflow-y: auto">
+      <div class="mb-3">
+        <div id="loading-activity" data-role="activity" data-type="metro" data-style="color" class="no-visible"></div>
+      </div>
+
+      {% block content %}
+
+      {% endblock %}
+
+    </div>
+  </div>
+</div>
+
+
+<!-- jQuery first, then Metro UI JS -->
+<script src="{{ asset('assets/metroui/vendors/metro4/js/metro.min.js') }}"></script>
+<script src="{{ asset('assets/metroui/vendors/jquery/jquery-3.4.1.min.js') }}"></script>
+<script src="{{ asset('assets/metroui/vendors/chartjs/Chart.bundle.min.js') }}"></script>
+<script src="{{ asset('assets/metroui/vendors/qrcode/qrcode.min.js') }}"></script>
+<script src="{{ asset('assets/metroui/vendors/jsbarcode/JsBarcode.all.min.js') }}"></script>
+<script src="{{ asset('assets/metroui/vendors/ckeditor/ckeditor.js') }}"></script>
+<script src="{{ asset('assets/metroui/js/flasher.min.js') }}"></script>
+
+<script src="{{ asset('assets/metroui/js/jquery-dateformat.min.js') }}"></script>
+<script src="{{ asset('assets/metroui/js/ajax.js') }}"></script>
+
+{#MetroUI Components Configuration#}
+<script src="{{ asset('assets/metroui/js/metroui.component.table.js') }}"></script>
+<script src="{{ asset('assets/metroui/js/metroui.component.hint.js') }}"></script>
+<script src="{{ asset('assets/metroui/js/document.js') }}"></script>
+<script src="{{ asset('assets/metroui/js/document.ready.js') }}"></script>
+<script>
+  function loading() {
+    $('#loading-activity').removeClass('no-visible');
+  }
+  function loadingModule() {
+    Metro.activity.open({
+      type: 'square',
+      overlayColor: '#fff',
+      overlayAlpha: 0.9,
+      text: '<div class=\'mt-2 text-small\'>Cargando módulo. Por favor, espere ...</div>',
+      overlayClickClose: false
+    });
+  }
+</script>
+<script>
+  var myVar = setInterval(myTimer, 1000);
+  var d = new Date('{{ "now" | date('Y-m-d h:i:s a') }}');
+  function myTimer() {
+    d.setSeconds(d.getSeconds() + 1);
+    var t = d.toLocaleTimeString('en-US');
+    $("#time-clock").html(t);
+  }
+
+  $('button#btn-guardar').on('click', function () {
+    $('div.form form').submit();
+  })
+</script>
+<script>
+  Metro.utils.addLocale({
+    'es-ES': {
+      "calendar": {
+        "months": [
+          "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre",
+          "Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"
+        ],
+        "days": [
+          "Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado",
+          "Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sá",
+          "Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sáb"
+        ],
+        "time": {
+          "days": "D",
+          "hours": "HRS",
+          "minutes": "MIN",
+          "seconds": "SEG"
+        }
+      },
+      "buttons": {
+        "ok": "Ok",
+        "cancel": "Cancelar",
+        "done": "Hecho",
+        "today": "Hoy",
+        "now": "Ahora",
+        "clear": "Limpiar",
+        "help": "Ayuda",
+        "yes": "Sí",
+        "no": "No",
+        "random": "Aleatorio"
+      }
+    }
+  });
+  Metro.init();
+</script>
+{% block bottom_scripts %}
+
+{% endblock %}
+</body>
+</html>

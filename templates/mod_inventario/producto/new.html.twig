@@ -1,0 +1,36 @@
+{% extends 'mod_inventario/_template.html.twig' %}
+
+{% set title = app.request.get('_route') | get_action ~ 'producto' %}
+
+{% block content %}
+    {{ form_start(form, { 'attr' : { 'data-role': 'validator' } }) }}
+    <div class="d-flex flex-align-center p-2 bg-white mb-3">
+        <a href="{{ path('app_mod_inventario_producto_index') }}" class="button square outline"><span class="mif-arrow-left"></span></a>
+        <span class="ml-2 text-leader">{{ title }}</span>
+        <div class="ml-auto">
+            <button type="submit" title="Guardar" class="button square primary"><span class="mif-checkmark"></span></button>
+        </div>
+    </div>
+    <div class="bg-white p-3">
+        {% if form.saldoInicial is defined %}
+            <div class="row">
+                <div class="cell-md-6">{{ form_row(form.nombre) }}</div>
+                <div class="cell-md-4">{{ form_row(form.unidadMedida) }}</div>
+                <div class="cell-md-2">{{ form_row(form.saldoInicial) }}</div>
+            </div>
+        {% else %}
+            <div class="row">
+                <div class="cell-md-6">{{ form_row(form.nombre) }}</div>
+                <div class="cell-md-6">{{ form_row(form.unidadMedida) }}</div>
+            </div>
+        {% endif %}
+        <div class="row">
+            <div class="cell-md-12">{{ form_row(form.activo) }}</div>
+        </div>
+        <div class="row">
+            <div class="cell-md-6">{{ form_row(form.precioCompra) }}</div>
+            <div class="cell-md-6">{{ form_row(form.precioVenta) }}</div>
+        </div>
+    </div>
+    {{ form_end(form) }}
+{% endblock %}

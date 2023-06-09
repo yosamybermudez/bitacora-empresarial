@@ -1,0 +1,79 @@
+doctrine:
+    dbal:
+        url: '%env(resolve:DATABASE_URL)%'
+
+        # IMPORTANT: You MUST configure your server version,
+        # either here or in the DATABASE_URL env var (see .env file)
+        #server_version: '14'
+    orm:
+        auto_generate_proxy_classes: true
+        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+        auto_mapping: true
+        mappings:
+            App:
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/App/Entity'
+                prefix: 'App\Entity'
+                alias: App
+
+            AppBase:
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/AppBase/Entity'
+                prefix: 'AppBase\Entity'
+                alias: AppBase
+            AppSistema:
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/AppSistema/Entity'
+                prefix: 'AppSistema\Entity'
+                alias: AppSistema
+            ModCompras:
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/ModCompras/Entity'
+                prefix: 'ModCompras\Entity'
+                alias: ModCompras
+            ModInventario:
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/ModInventario/Entity'
+                prefix: 'ModInventario\Entity'
+                alias: ModInventario
+            ModJuridica:
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/ModJuridica/Entity'
+                prefix: 'ModJuridica\Entity'
+                alias: ModJuridica
+            ModRecursosHumanos:
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/ModRecursosHumanos/Entity'
+                prefix: 'ModRecursosHumanos\Entity'
+                alias: ModRecursosHumanos
+            ModVentas:
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/ModVentas/Entity'
+                prefix: 'ModVentas\Entity'
+                alias: ModVentas
+
+when@test:
+    doctrine:
+        dbal:
+            # "TEST_TOKEN" is typically set by ParaTest
+            dbname_suffix: '_test%env(default::TEST_TOKEN)%'
+
+when@prod:
+    doctrine:
+        orm:
+            auto_generate_proxy_classes: false
+            proxy_dir: '%kernel.build_dir%/doctrine/orm/Proxies'
+            query_cache_driver:
+                type: pool
+                pool: doctrine.system_cache_pool
+            result_cache_driver:
+                type: pool
+                pool: doctrine.result_cache_pool
+
+    framework:
+        cache:
+            pools:
+                doctrine.result_cache_pool:
+                    adapter: cache.app
+                doctrine.system_cache_pool:
+                    adapter: cache.system

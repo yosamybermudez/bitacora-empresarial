@@ -1,0 +1,24 @@
+{% extends 'mod_rec_humanos/_template.html.twig' %}
+
+{% set title = app.request.get('_route') | get_action ~ 'cargo' %}
+
+{% block content %}
+    {{ form_start(form, { 'attr' : { 'data-role': 'validator' } }) }}
+    <div class="d-flex flex-align-center p-2 bg-white mb-3">
+        <a href="{{ path('app_mod_rec_humanos_ajustes') }}" class="button square outline"><span class="mif-arrow-left"></span></a>
+        <span class="ml-2 text-leader">{{ title }}</span>
+        <div class="ml-auto">
+            <button type="submit" title="Guardar" class="button square primary"><span class="mif-checkmark"></span></button>
+        </div>
+
+    </div>
+    <div class="bg-white p-3">
+        {{ form_start(form, { 'attr' : { 'data-role': 'validator' } }) }}
+        <div class="row">
+            <div class="cell-md-6">{{ form_row(form.nombre) }}</div>
+            <div class="cell-md-3">{{ form_row(form.salarioEscala) }}</div>
+            <div class="cell-md-3">{{ form_row(form.escalaSalarial) }}</div>
+        </div>
+    </div>
+    {{ form_end(form) }}
+{% endblock %}

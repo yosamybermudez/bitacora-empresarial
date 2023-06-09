@@ -1,0 +1,50 @@
+
+
+<div class="row">
+    {% if form.entregado_por is defined %}
+        <div class="cell-lg-4">
+            {% set _form = form.entregado_por %}
+            <div class="row">
+                <div class="cell-md-12">{{ form_row(_form.entregado_por_nombre) }}</div>
+            </div>
+            <div class="row">
+                <div class="cell-md-12">{{ form_row(_form.entregado_por_cargo) }}</div>
+            </div>
+            <div class="row">
+                <div class="cell-md-6">{{ form_row(_form.entregado_por_ci) }}</div>
+                <div class="cell-md-6">{{ form_row(_form.entregado_por_fecha) }}</div>
+            </div>
+        </div>
+    {% endif %}
+    {% if form.transportado_por is defined %}
+    <div class="cell-lg-4">
+        {% set _form = form.transportado_por %}
+        <div class="row">
+            <div class="cell-md-12">{{ form_row(_form.transportado_por_nombre) }}</div>
+        </div>
+        <div class="row">
+            <div class="cell-md-12">{{ form_row(_form.transportado_por_cargo) }}</div>
+        </div>
+        <div class="row">
+            <div class="cell-md-6">{{ form_row(_form.transportado_por_ci) }}</div>
+            <div class="cell-md-6">{{ form_row(_form.transportado_por_fecha) }}</div>
+        </div>
+    </div>
+    {% endif %}
+    {% if form.recibido_por is defined %}
+    <div class="cell-lg-4">
+        {% set _form = form.recibido_por %}
+        <div class="row">
+            <div class="cell-md-12">{{ form_row(_form.recibido_por_nombre) }}</div>
+        </div>
+        <div class="row">
+            <div class="cell-md-12">{{ form_row(_form.recibido_por_cargo) }}</div>
+        </div>
+        <div class="row">
+            <div class="cell-md-6">{{ form_row(_form.recibido_por_ci) }}</div>
+            <div class="cell-md-6">{{ form_row(_form.recibido_por_fecha) }}</div>
+        </div>
+    </div>
+    {% endif %}
+
+</div>

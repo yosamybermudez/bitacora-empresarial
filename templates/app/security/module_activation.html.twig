@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="shortcut icon" href="{{ asset('assets/metroui/images/favicon_indigo.ico') }}" type="image/x-icon">
+    <!-- Metro 4 -->
+    <link rel="stylesheet" href="{{ asset('assets/metroui/vendors/metro4/css/metro-all.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/metroui/css/index.css') }}">
+
+    <title>bitácora | Activar módulos</title>
+</head>
+<body class="m4-cloak h-vh-100 d-flex flex-justify-center flex-align-center">
+
+{#{{ form_start(form, { 'attr' : { 'data-role': 'validator', 'onsubmit' : 'loading()' } }) }}#}
+<div class="container">
+    <form id="modulos" name="modulos" method="post">
+        <div class="row">
+        <div class="cell-md-12">
+            <div class="d-flex flex-align-center p-2 bg-white mb-3">
+                <span class="ml-2 text-leader">Módulos disponibles</span>
+                <div class="ml-auto">
+                    <button type="submit" title="Guardar" class="button square primary"><span class="mif-checkmark"></span></button>
+                </div>
+            </div>
+        </div>
+        <div class="cell-md-12">
+            <div class="row">
+                {% for modulo in modulos %}
+                    <div class="cell-md-3">
+                        <div class="icon-box border bd-default">
+                            <div class="icon bg-{{ modulo.colorIdentificativo }} fg-white"><span class="mif-{{ modulo.iconoMetroui }}"></span></div>
+                            <div class="content p-4">
+                                <div class="text-upper">{{ modulo.nombre }}</div>
+{#                                <div class="text-upper text-bold text-lead">{% if modulo.activado %} ACTIVADO {% else %}DESACTIVADO{% endif %}</div>#}
+                            </div>
+                            <input type="checkbox" name="{{ modulo.identificador }}" data-role="checkbox">
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    </form>
+</div>
+{#{{ form_end(form) }}#}
+<script src="{{ asset('assets/metroui/vendors/jquery/jquery-3.4.1.min.js') }}"></script>
+<script src="{{ asset('assets/metroui/vendors/metro4/js/metro.min.js') }}"></script>
+<script>
+    function invalidForm(){
+        var form  = $(this);
+        form.addClass("ani-ring");
+        setTimeout(function(){
+            form.removeClass("ani-ring");
+        }, 1000);
+    }
+</script>
+<script>
+    function loading() {
+        Metro.activity.open({
+            type: 'square',
+            overlayColor: '#fff',
+            overlayAlpha: 0.9,
+            text: '<div class=\'mt-2 text-small\'>Por favor, espere ...</div>',
+            overlayClickClose: false
+        });
+    }
+</script>
+</body>
+</html>

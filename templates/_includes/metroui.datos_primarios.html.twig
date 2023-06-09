@@ -1,0 +1,28 @@
+<div class="d-flex flex-align-center p-2 bg-white mb-3">
+    <span class="ml-2 text-leader"><b>{{ title }}</b></span>
+</div>
+{#<div data-role="panel" class="mb-3">#}
+{#    <div class="d-flex flex-align-center bg-white">#}
+{#        <div class="tiles-grid tiles-group size-10">#}
+{#            {% for enlace in enlaces %}#}
+{#                    <a href="{{ enlace.enlace }}" class="bg-darkCyan" data-role="tile" data-size="wide">#}
+{#                        <span class="mif-description icon"></span>#}
+{#                        <span class="branding-bar">{{ enlace.nombre }}</span>#}
+{#                        #}{#                    <span class="badge-bottom"></span>#}
+{#                    </a>#}
+{#            {% endfor %}#}
+{#        </div>#}
+{#    </div>#}
+{#</div>#}
+<div class="bg-white mb-3">
+    <ul>
+        {% for enlace in enlaces %}
+            <li>
+                <a href="{{ enlace.enlace }}">
+                    <span class="branding-bar">{{ enlace.nombre }}</span>
+                    {#                    <span class="badge-bottom"></span>#}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+</div>

@@ -1,0 +1,929 @@
+<!--MENU SUPERIOR-->
+{#{% if menu is defined%}#}
+    <div id="action_menu">
+
+        {% if app.user.plantilla=='plantillaComercial' %}
+            <div><a class="cargando" href="{{ path('_comercial_inicio') }}"><p class="modulo">Módulo Comercial</p></a></div>
+        {% elseif app.user.plantilla=='plantillaAdministracion'%}
+            <div><a class="cargando" href="{{ path('_administracion_inicio') }}"><p class="modulo">Módulo Administración</p></a></div>
+        {% elseif app.user.plantilla=='plantillaAseguramiento'%}
+            <div><a class="cargando" href="{{ path('_aseguramiento_inicio') }}"><p class="modulo">Módulo Aseguramiento</p></a></div>
+        {% elseif app.user.plantilla=='plantillaMercadotecnia'%}
+            <div><a class="cargando" href="{{ path('_mercadotecnia_inicio') }}"><p class="modulo">Inteligencia Comercial</p></a></div>
+        {% elseif app.user.plantilla=='plantillaPlaneacionEstrategica'%}
+            <div><a class="cargando" href="{{ path('_planeacion_estrategica_inicio') }}"><p class="modulo">Planeación Estratégica</p></a></div>
+        {% elseif app.user.plantilla=='plantillaInterfaces'%}
+            <div><a class="cargando" href="{{ path('_interfaces_inicio') }}"><p class="modulo">Gestión Interfaces</p></a></div>
+        {% elseif app.user.plantilla=='plantillaModelos'%}
+            <div ><p style="color: black!important;" class="modulo">Documentos Generales</p></div>
+            {% if (is_granted('ROLE_ESPECIALISTA_PRINCIPAL')) and inicio is defined%}
+                <div class="toolbar align-fix" style="margin-right: 50px!important;" >
+                    <ul class="nav nav-pills">
+                        <li style="float: right!important;" title="Crear" class="active titulo nav-pills-right"><a class="cargando" href="{{ path("_doc_plantillas_crear",{'accion':'modelos'}) }}"><span class="glyphicon glyphicon glyphicon-plus"></span></a></li>
+                    </ul>
+                </div>
+            {% elseif app.user.plantilla=='plantillaModelos' and inicio is not defined%}
+                <div >
+                    <a class="cargando" href="{{ path('_modelos_inicio') }}">
+                        <p style="color: black!important;" class="modulo">Documentos Generales</p>
+                    </a>
+                </div>
+            {% endif %}
+        {% endif %}
+        <ul class="h-menu">
+            <!--MENU FICHA CLIENTE-->
+            {% if app.user.plantilla=='plantillaComercial' %}
+                <li class="dropdown">
+                    <a href="#"  data-toggle="dropdown" class="dropdown-toggle">Ficha Cliente<b class="caret"></b></a>
+                    <ul class="d-menu" data-role="dropdown">
+                        {% if is_granted('ROLE_ESPECIALISTA_PRINCIPAL') %}
+                            <li><a class="cargando" href="{{ path('ficha_new', {'tipo': 'cliente'}) }}"><span class="glyphicon glyphicon-plus"></span> Añadir ficha</a></li>
+                        {% endif %}
+                        {% if is_granted('ROLE_COMERCIAL') %}
+                            <li><a class="cargando" href="{{ path("persona_crear", {'tipo': 'cliente'}) }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir persona</a></li>
+                        {% endif %}
+                        <li><a class="cargando" href="{{ path('ficha_index', {'tipo': 'cliente'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Fichas cliente</a></li>
+                        <li><a class="cargando" href="{{ path("usuario_cliente",{'tipo':'cliente'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Distribuci&oacute;n de clientes</a></li>
+                        <li><a class="cargando" href="{{ path("persona_index", {'tipo': 'cliente'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Personal de los clientes</a></li>
+                        {% if is_granted('ROLE_COMERCIAL') %}
+                            <li><a class="cargando" href="{{ path("distribuir_cliente_usuario_user", {'tipo': 'cliente'}) }}"><span class="glyphicon glyphicon-fullscreen"></span> Distribuir clientes</a></li>
+                            <li ><a  class="cargando" href="{{ path("distribuir_grupo_cliente",{'tipo': 'cliente'}) }}"><span class="glyphicon glyphicon-retweet"></span>  Asignar clientes disponibles</a></li>
+                        {% endif %}
+                        {% if is_granted('ROLE_COMERCIAL')%}
+                            <li><a class="cargando" href="{{ path('_ficha_cliente', {'elementos': 'Todos'}) }}"><span class="glyphicon glyphicon-export"></span> Exportar fichas</a></li>
+                        {% endif %}
+                        {% if is_granted('ROLE_ADMINISTRADOR') %}
+                            <li><a class="cargando" href="{{ path('ficha_actualizar_campos', {'tipo': 'cliente'}) }}"><span class="glyphicon glyphicon-export"></span> Actualizar valores generales</a></li>
+                        {% endif %}
+                        <li><a class="cargando" href="{{ path("ficha_dashboard",{'tipo': 'cliente'}) }}"><span class="glyphicon glyphicon-dashboard"></span> Dashboard ficha</a></li>
+                    </ul>
+                </li>
+                <li class="divider-vertical"></li>
+
+            {% endif %}
+            {% if app.user.plantilla!='plantillaModelos' and app.user.plantilla!='plantillaAdministracion' and app.user.plantilla!='' and app.user.plantilla!='plantillaUpdateUsuario'%}
+                <!--MENU DOCUMENTACION-->
+                <li class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">Documentaci&oacute;n<b class="caret"></b></a>
+                    <ul class="d-menu" data-role="dropdown">
+                        {% if is_granted('ROLE_NOTA')%}
+                            <li class="dropdown-submenu">
+                                <a href="#" data-toggle="dropdown" class="dropdown-toggle">Nota</a>
+                                <ul class="d-menu" data-role="dropdown">
+                                    <li><a class="cargando" href="{{ path('_nota_agregar') }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir nota </a></li>
+                                    <li><a class="cargando" href="{{ path('_nota_listar_anual') }}"><span class="glyphicon glyphicon-list-alt"></span> Notas {{ app.user.hoy|date('Y') }}</a></li>
+                                    <li><a class="cargando" href="{{ path('_nota_listar') }}"><span class="glyphicon glyphicon-list-alt"></span> Notas </a></li>
+                                </ul>
+                            </li>
+                        {% endif %}
+                        {% if app.user.plantilla=='plantillaComercial'%}
+                            <li class="dropdown-submenu">
+                                <a href="#" data-toggle="dropdown" class="dropdown-toggle">Acta de entrega</a>
+                                <ul class="d-menu" data-role="dropdown">
+                                    <li><a class="cargando" href="{{ path("_acta_entrega_agregar") }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir acta </a></li>
+                                    <li><a class="cargando" href="{{ path("_acta_entrega_listar") }}"><span class="glyphicon glyphicon-list-alt"></span> Actas {{ app.user.hoy|date('Y') }}</a></li>
+                                    <li><a class="cargando" href="{{ path("_acta_entrega_listar_todas") }}"><span class="glyphicon glyphicon-list-alt"></span> Actas de entrega </a></li>
+                                    {% if is_granted('ROLE_ABOGADO') or is_granted('ROLE_COMERCIAL') %}
+                                        <li><a class="cargando" href="{{ path("_acta_entrega_asociar",{'id_contrato':0}) }}"><span class="glyphicon glyphicon-random"></span> Asociar Contrato-Acta </a></li>
+                                    {% endif %}
+                                </ul>
+                            </li>
+                        {% endif %}
+                        {% if app.user.plantilla=='plantillaComercial' %}
+                            <li class="dropdown-submenu">
+                                <a href="#" data-toggle="dropdown" class="dropdown-toggle">Acta de ocupaci&oacute;n</a>
+                                <ul class="d-menu" data-role="dropdown">
+                                    {% if is_granted('ROLE_ABOGADO') %}
+                                        <li><a class="cargando" href="{{ path("_acta_ocupacion_juridica_agregar",{'tipo':'Firmados','url':link}) }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir acta </a></li>
+                                        <li><a class="cargando" href="{{ path("_acta_ocupacion_juridica_agregar",{'tipo':'Cancelados','url':link}) }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir acta de Cancelados </a></li>
+                                        <li title="Genera un acta con todos los contratos en estado A Abogado"><a class="cargando" href="{{ path("_acta_ocupacion_juridica_generar",{'tipo':'Firmados','url':link}) }}"><span class="glyphicon glyphicon-random"></span> Generar Acta </a></li>
+                                        <li title="Genera un acta con todos los contratos en estado A Abogado"><a class="cargando" href="{{ path("_acta_ocupacion_juridica_generar",{'tipo':'Cancelados','url':link}) }}"><span class="glyphicon glyphicon-random"></span> Generar Acta de Cancelados </a></li>
+                                    {% endif %}
+                                    <li><a class="cargando" href="{{ path("_acta_ocupacion_anual") }}"><span class="glyphicon glyphicon-list-alt"></span> Actas de ocupaci&oacute;n {{ ''|date('Y') }}</a></li>
+                                    <li><a class="cargando" href="{{ path("_acta_ocupacion_juridica_listar") }}"><span class="glyphicon glyphicon-list-alt"></span> Actas de ocupaci&oacute;n</a></li>
+                                </ul>
+                            </li>
+                        {% endif %}
+                        <li class="dropdown-submenu">
+                            <a href="#" data-toggle="dropdown" class="dropdown-toggle">Documentos subidos</a>
+                            <ul class="d-menu" data-role="dropdown">
+                                <li><a class="cargando" href="{{ path("_file_documento_crear") }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir</a>
+                                <li><a class="cargando" href="{{ path("_file_documento_listar") }}"><span class="glyphicon glyphicon-list-alt"></span> Documentos</a>
+                            </ul>
+                        </li>
+                        {% if app.user.plantilla=='plantillaComercial'%}
+                            <li class="dropdown-submenu">
+                                <a href="#" data-toggle="dropdown" class="dropdown-toggle">Documentos Plantillas</a>
+                                <ul class="d-menu" data-role="dropdown">
+                                    <li><a class="cargando" href="{{ path("_doc_plantillas_crear",{'accion':'modulo'}) }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir</a></li>
+                                    <li><a class="cargando" href="{{ path("_doc_plantillas_listar") }}"><span class="glyphicon glyphicon-list-alt"></span> Listar</a></li>
+                                </ul>
+                            </li>
+                        {% endif %}
+                        {% if app.user.plantilla=='plantillaComercial' and (is_granted('ROLE_ABOGADO') )%}
+
+                            <li class="dropdown-submenu">
+                                <a href="#" data-toggle="dropdown" class="dropdown-toggle">Punto de Aprobación</a>
+                                <ul class="d-menu" data-role="dropdown">
+                                    <li><a class="cargando" href="{{ path("puntoaprobacion_index",{'elementos':''|date('Y')}) }}"><span class="glyphicon glyphicon-list-alt"></span> Listar {{ ''|date('Y') }}</a></li>
+                                    <li><a class="cargando" href="{{ path("puntoaprobacion_index",{'elementos':'registrados'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Listar Registrados</a></li>
+                                </ul>
+                            </li>
+                            <li><a class="cargando" href="{{ path("_visto_bueno_listar") }}"><span class="glyphicon glyphicon-list-alt"></span> Vistos buenos</a></li>
+                        {% endif %}
+                    </ul>
+                </li>
+                <li class="divider-vertical"></li>
+            {% endif %}
+            {% if app.user.plantilla=='plantillaAseguramiento' and ( 'ROLE_INFORMATICO_ADMINISTRADOR' in  app.user.roles  or is_granted('ROLE_ADMINISTRADOR'))%}
+                <li class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">Informática<b class="caret"></b></a>
+                    <ul class="d-menu" data-role="dropdown">
+                        <li class="dropdown-submenu">
+                            <a data-toggle="dropdown" class="dropdown-toggle" href="#">Expediente PC</a>
+                            <ul class="d-menu" data-role="dropdown">
+                                <li><a class="cargando" href="{{ path('expedientepc_new') }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir </a></li>
+                                <li><a class="cargando" href="{{ path('expedientepc_index',{'elementos':'Vigentes'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Expedientes vigentes</a></li>
+                                <li><a class="cargando" href="{{ path('expedientepc_index',{'elementos':'Registrados'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Expedientes registrados</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-submenu">
+                            <a data-toggle="dropdown" class="dropdown-toggle" href="#">Ordenes de Servicio</a>
+                            <ul class="d-menu" data-role="dropdown">
+                                <li><a class="cargando" href="{{ path('informatica_ordenservicio_new') }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir </a></li>
+                                <li><a class="cargando" href="{{ path('informatica_ordenservicio_index',{'elementos':'Vigentes'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Anual</a></li>
+                                <li><a class="cargando" href="{{ path('informatica_ordenservicio_index',{'elementos':'Registradas'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Registradas</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-submenu">
+                            <a data-toggle="dropdown" class="dropdown-toggle" href="#">Control PC</a>
+                            <ul class="d-menu" data-role="dropdown">
+                                <li><a class="cargando" href="{{ path('controlpc_new') }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir </a></li>
+                                <li><a class="cargando" href="{{ path('controlpc_index',{'elementos':'a'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Control PC {{ ''|date('Y') }}</a></li>
+                                <li><a class="cargando" href="{{ path('controlpc_index',{'elementos':'registrados'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Control PC Registrados</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li class="divider-vertical"></li>
+            {% endif %}
+            {% if ('ROLE_REGISTRO_CREACION' in  app.user.roles or is_granted('ROLE_REGISTRO_CREACION_ADMINISTRADOR') or is_granted('ROLE_ADMINISTRADOR')) and app.user.plantilla=='plantillaMercadotecnia'%}
+                <li class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">Registro Creación<b class="caret"></b></a>
+                    <ul class="d-menu" data-role="dropdown">
+                        <li class="dropdown-submenu">
+                            <a data-toggle="dropdown" class="dropdown-toggle" href="#">Propiedad Industrial</a>
+                            <ul class="d-menu" data-role="dropdown">
+                                {% if is_granted('ROLE_REGISTRO_CREACION_ADMINISTRADOR') or is_granted('ROLE_ADMINISTRADOR')%}
+                                    <li><a class="cargando" href="{{ path('propiedadindustrial_new') }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir </a></li>
+                                {% endif %}
+                                <li><a class="cargando" href="{{ path('propiedadindustrial_index',{'elementos':'Vigentes'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Registros vigentes</a></li>
+                                <li><a class="cargando" href="{{ path('propiedadindustrial_index',{'elementos':'registrados'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Todos  los Registros</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-submenu">
+                            <a data-toggle="dropdown" class="dropdown-toggle" href="#">Propiedad Intelectual</a>
+                            <ul class="d-menu" data-role="dropdown">
+                                {% if is_granted('ROLE_REGISTRO_CREACION_ADMINISTRADOR') or 'ROLE_REGISTRO_ADMINISTRADOR' in  app.user.roles or is_granted('ROLE_ADMINISTRADOR')%}
+                                    <li><a class="cargando" href="{{ path('propiedad_intelectual_new') }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir </a></li>
+                                {% endif %}
+                                {#                                        <li><a class="cargando" href="{{ path('propiedad_intelectual_index',{'elementos':'Vigentes'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Registros vigentes</a></li>#}
+                                <li><a class="cargando" href="{{ path('propiedad_intelectual_index',{'elementos':'registrados'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Todos  los Registros</a></li>
+                                <li><a class="cargando" href="{{ path('modelo_a_index',{'elementos':'vigentes'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Modelos A Vigentes</a></li>
+                                <li><a class="cargando" href="{{ path('modelo_a_index',{'elementos':'registrados'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Modelos A Registrados</a></li>
+                                <li><a class="cargando" href="{{ path('modelo_b_index',{'elementos':'vigentes'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Modelos B Vigentes</a></li>
+                                <li><a class="cargando" href="{{ path('modelo_b_index',{'elementos':'registrados'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Modelos B Registrados</a></li>
+                                {#                                        <li><a class="cargando" href="{{ path('propiedad_intelectual_busqueda_avanzada',{'accion':'todos'}) }}"><span class="glyphicon glyphicon-search"></span> Búsqueda avanzada</a></li>#}
+                            </ul>
+                        </li>
+                        <li class="dropdown-submenu">
+                            <a data-toggle="dropdown" class="dropdown-toggle" href="#">Autores</a>
+                            <ul class="d-menu" data-role="dropdown">
+                                {% if is_granted('ROLE_REGISTRO_CREACION_ADMINISTRADOR') or 'ROLE_REGISTRO_ADMINISTRADOR' in  app.user.roles or is_granted('ROLE_ADMINISTRADOR')%}
+                                    <li><a class="cargando" href="{{ path('propiedad_registro_autor_new') }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir </a></li>
+                                {% endif %}
+                                <li><a class="cargando" href="{{ path('propiedad_registro_autor_index') }}"><span class="glyphicon glyphicon-list-alt"></span> Todos  los Registros</a></li>
+
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li class="divider-vertical"></li>
+            {% endif %}
+            <!--MENU Contratacion-->
+            {% if app.user.plantilla=='plantillaComercial' or app.user.plantilla=='plantillaInterfaces'%}
+                <li class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">Contratación<b class="caret"></b></a>
+                    <ul class="d-menu" data-role="dropdown">
+                        <li class="dropdown-submenu">
+                            <a href="#" data-toggle="dropdown" class="dropdown-toggle">Oferta</a>
+                            <ul class="d-menu" data-role="dropdown">
+                                {% if is_granted('ROLE_COMERCIAL')%}
+                                    <li><a class="cargando" href="{{ path("_oferta_agregar") }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir </a></li>
+                                {% endif %}
+                                <li><a class="cargando" href="{{ path('_oferta_listar') }}"><span class="glyphicon glyphicon-list-alt"></span> En proceso</a></li>
+                                <li><a class="cargando" href="{{ path('_oferta_listar_todas') }}"><span class="glyphicon glyphicon-list-alt"></span> Registradas</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-submenu">
+                            <a href="#" data-toggle="dropdown" class="dropdown-toggle">Contratos en proceso</a>
+                            <ul class="d-menu" data-role="dropdown">
+                                {% if is_granted('ROLE_ABOGADO') or is_granted('ROLE_COMERCIAL') %}
+                                    <li><a class="cargando" href="{{ path('_contrato_en_proceso_agregar') }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir </a></li>
+                                {% endif %}
+                                <li><a class="cargando" href="{{ path('_contrato_en_proceso_listar') }}"><span class="glyphicon glyphicon-list-alt"></span> Contratos en proceso</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-submenu">
+                            <a href="#" data-toggle="dropdown" class="dropdown-toggle">Contratos firmados</a>
+                            <ul class="d-menu" data-role="dropdown">
+                                {% if is_granted('ROLE_ABOGADO') or is_granted('ROLE_COMERCIAL') %}
+                                    <li><a href="{{path('_contrato_firmado_agregar') }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir contrato</a></li>
+                                {% endif %}
+                                <li><a class="cargando" href="{{ path('_contrato_firmado_listar',{'operacion':'false'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Contratos firmados</a></li>
+                                <li><a class="cargando" href="{{ path('_hitos_listar') }}"><span class="glyphicon glyphicon-list-alt"></span> Hitos vigentes</a></li>
+                                <li><a class="cargando" href="{{ path('_hitos_listar_todos') }}"><span class="glyphicon glyphicon-list-alt"></span> Hitos registrados</a></li>
+                            </ul>
+                        </li>
+                        {% if app.user.plantilla=='plantillaInterfaces'%}
+                            <li class="dropdown-submenu">
+                                <a href="#" data-toggle="dropdown" class="dropdown-toggle">Consultores por Contrato</a>
+                                <ul class="d-menu" data-role="dropdown">
+                                    {% if is_granted('ROLE_ABOGADO') or is_granted('ROLE_INTERFACES') or is_granted('ROLE_COMERCIAL') %}
+                                        <li><a href="{{path('contrato_anexo_consultor_new') }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir</a></li>
+                                    {% endif %}
+                                    {#                                                            <li><a class="cargando" href="{{ path('_contrato_firmado_listar',{'operacion':'false'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Contratos firmados</a></li>#}
+                                    {#                                                            <li><a class="cargando" href="{{ path('_hitos_listar') }}"><span class="glyphicon glyphicon-list-alt"></span> Hitos vigentes</a></li>#}
+                                    <li><a class="cargando" href="{{ path('contrato_anexo_consultor_index') }}"><span class="glyphicon glyphicon-list-alt"></span> Registrados</a></li>
+                                </ul>
+                            </li>
+                        {% endif%}
+                        <li class="submenu-menu"><a class="cargando" href="{{ path('_contrato_listar',{'operacion':'false'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Todos los contratos</a></li>
+                        {% if is_granted('ROLE_ABOGADO') or is_granted('ROLE_COMERCIAL') %}
+                            <li class="submenu-menu"><a href="{{path('_contrato_busqueda_avanzada',{'accion':'todos'}) }}"><span class="glyphicon glyphicon-search"></span> Búsqueda avanzada</a></li>
+                        {% endif %}
+                        <li><a class="cargando" href="{{ path("_contrato_dashboard") }}"><span class="glyphicon glyphicon-dashboard"></span> Dashboard Contratación</a></li>
+                    </ul>
+                </li>
+                <li class="divider-vertical"></li>
+            {% endif %}
+            <!--MENU facturacion-->
+            {% if app.user.plantilla=='plantillaComercial' or app.user.plantilla=='plantillaInterfaces'%}
+                <li class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">Facturación<b class="caret"></b></a>
+                    <ul class="d-menu" data-role="dropdown">
+                        {% if app.user.plantilla=='plantillaComercial'%}
+                            <li class="dropdown-submenu">
+                                <a href="#" data-toggle="dropdown" class="dropdown-toggle">Pre Factura</a>
+                                <ul class="d-menu" data-role="dropdown">
+                                    {% if is_granted('ROLE_COMERCIAL') %}
+                                        <li><a class="cargando" href="{{ path("_solicitud_factura_crear",{'accion':'prefactura'})  }}"><span class="glyphicon glyphicon-plus"></span> Solicitar PreFactura </a></li>
+                                    {% endif %}
+                                    <li><a class="cargando" href="{{ path("_control_pre_factura_listar") }}"><span class="glyphicon glyphicon-list-alt"></span> Pre Facturas {{ app.user.hoy|date('Y') }}</a></li>
+                                    {% if is_granted('ROLE_COMERCIAL') or is_granted('ROLE_FACTURADOR') %}
+                                        <li><a class="cargando" href="{{ path("_control_pre_factura_listar_todas") }}"><span class="glyphicon glyphicon-list-alt"></span> Registradas</a></li>
+                                        <li class="submenu-menu"><a href="{{path('_pre_factura_busqueda_avanzada',{'accion':'busqueda'}) }}"><span class="glyphicon glyphicon-search"></span> Búsqueda avanzada</a></li>
+                                    {% endif %}
+                                </ul>
+                            </li>
+                        {% endif %}
+                        <li class="dropdown-submenu">
+                            <a href="#" data-toggle="dropdown" class="dropdown-toggle">Facturación</a>
+                            <ul class="d-menu" data-role="dropdown">
+                                {% if app.user.plantilla!='plantillaInterfaces' and  is_granted('ROLE_COMERCIAL') %}
+                                    <li><a class="cargando" href="{{ path("_solicitud_factura_crear",{'accion':'factura'})  }}"><span class="glyphicon glyphicon-plus"></span> Solicitar factura </a></li>
+                                {% endif %}
+                                <li><a class="cargando" href="{{ path("_control_factura_listar") }}"><span class="glyphicon glyphicon-list-alt"></span> Facturaci&oacute;n {{ app.user.hoy|date('Y') }}</a></li>
+                                {% if is_granted('ROLE_FACTURADOR') %}
+                                    <li><a class="cargando" href="{{ path("_control_factura_listar_todas") }}"><span class="glyphicon glyphicon-list-alt"></span> Registradas</a></li>
+                                    <li class="submenu-menu"><a href="{{path('_factura_busqueda_avanzada',{'accion':'busqueda'}) }}"><span class="glyphicon glyphicon-search"></span> Búsqueda avanzada</a></li>
+                                {% endif %}
+                            </ul>
+                        </li>
+                        {% if app.user.plantilla=='plantillaComercial'%}
+                            <li class="dropdown-submenu">
+                                <a href="#" data-toggle="dropdown" class="dropdown-toggle">Cuenta bancaria</a>
+                                <ul class="d-menu" data-role="dropdown">
+                                    {% if is_granted('ROLE_ESPECIALISTA_PRINCIPAL')%}
+                                        <li><a class="cargando" href="{{ path("_cuenta_bancaria_agregar") }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir</a></li>
+                                    {% endif %}
+                                    <li><a class="cargando" href="{{ path("_cuenta_bancaria_listar") }}"><span class="glyphicon glyphicon-list-alt"></span> Cuentas</a></li>
+                                </ul>
+                            </li>
+                            {% if is_granted('ROLE_ESPECIALISTA_PRINCIPAL') %}
+                                <li><a class="cargando" href="{{ path('datos_legales_modelo_asset_show', {'id': 0}) }}"><span class="glyphicon glyphicon-usd"></span> Datos legales/ASSET</a></li>
+                            {% endif %}
+                        {% endif %}
+                    </ul>
+                </li>
+                <li class="divider-vertical"></li>
+            {% endif %}
+
+            {% if app.user.plantilla!='plantillaModelos' and app.user.plantilla!=''  and app.user.plantilla!='plantillaUpdateUsuario'%}
+                <!--MENU Aseguramiento-->
+                {% if app.user.plantilla!='plantillaAdministracion' %}
+                    <li class="dropdown">
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">Aseguramiento<b class="caret"></b></a>
+                        <ul class="d-menu" data-role="dropdown">
+                            <li class="dropdown-submenu">
+                                <a href="#" data-toggle="dropdown" class="dropdown-toggle">Rutas</a>
+                                <ul class="d-menu" data-role="dropdown">
+                                    {% if is_granted('ROLE_ESPECIALISTA_PRINCIPAL')%}
+                                        <li><a class="cargando" href="{{ path("_ruta_agregar") }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir Ruta</a></li>
+                                        <li><a class="cargando" href="{{ path("_distribuir_rutas") }}"><span class="glyphicon glyphicon-fullscreen"></span> Distribuir Ruta</a></li>
+                                    {% endif %}
+                                    <li><a class="cargando" href="{{ path("_rutas") }}"><span class="glyphicon glyphicon-list-alt"></span> Rutas</a></li>
+                                    {% if is_granted('ROLE_COMERCIAL')%}
+                                        <li><a class="cargando" href="{{ path('_exportar_excel_rutas') }}"><span class="glyphicon glyphicon-export"></span> Exportar rutas</a></li>
+                                    {% endif %}
+                                </ul>
+                            </li>
+                            <li class="dropdown-submenu">
+                                <a href="#" data-toggle="dropdown" class="dropdown-toggle"> Solicitud transporte </a>
+                                <ul class="d-menu" data-role="dropdown">
+                                    <li><a class="cargando" href="{{ path("_solicitud_crear") }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir solicitud </a></li>
+                                    {#{% if is_granted('ROLE_GESTOR')%}#}
+                                    {#<li><a class="cargando" href="{{ path("_solicitud_estado") }}"><span class="glyphicon glyphicon-list-alt"></span> Estadísticas de solicitudes</a></li>#}
+                                    {#{% endif %}#}
+                                    <li><a class="cargando" href="{{ path("_solicitud_listar_anul") }}"><span class="glyphicon glyphicon-list-alt"></span> Solicitudes {{ ''|date('Y') }}</a></li>
+                                    <li><a class="cargando" href="{{ path("_solicitud_listar") }}"><span class="glyphicon glyphicon-list-alt"></span> Solicitudes</a></li>
+                                    <li><a class="cargando" href="{{ path("_solicitud_usuario") }}"><span class="glyphicon glyphicon-list-alt"></span> Mis solicitudes</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown-submenu">
+                                <a href="#" data-toggle="dropdown" class="dropdown-toggle"> Solicitud Protocolo </a>
+                                <ul class="d-menu" data-role="dropdown">
+                                    <li><a class="cargando" href="{{ path('_solicitud_protocolo_agregar') }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir solicitud </a></li>
+                                    <li><a class="cargando" href="{{ path("_solicitud_protocolo_listar_anual") }}"><span class="glyphicon glyphicon-list-alt"></span> Solicitudes {{ app.user.hoy|date('Y') }}</a></li>
+                                    {% if is_granted('ROLE_SOLICITUD_PROTOCOLO_ADMINISTRADOR')%}
+                                        <li><a class="cargando" href="{{ path('_solicitud_protocolo_listar') }}"><span class="glyphicon glyphicon-list-alt"></span> Solicitudes registradas</a></li>
+                                    {% endif %}
+                                </ul>
+                            </li>
+                            <li class="dropdown-submenu">
+                                <a href="#" data-toggle="dropdown" class="dropdown-toggle">Notificaciones</a>
+                                <ul class="d-menu" data-role="dropdown">
+                                    <li><a class="cargando" href="{{ path("_monitorear_listar",{'usuario':app.user.username}) }}"><span class="glyphicon glyphicon-list-alt"></span> Seguimientos</a></li>
+                                    <li><a class="cargando" href="{{ path("_notificacion_listar",{'usuario':app.user.username,'accion':'mias'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Notificaciones</a></li>
+                                    {% if is_granted('ROLE_ADMINISTRADOR') and app.user.plantilla=='plantillaAdministracion'%}
+                                        <li><a class="cargando" href="{{ path("_notificacion_listar",{'usuario':app.user.username,'accion':'todas'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Todas las Notificaciones</a></li>
+                                    {% endif %}
+                                </ul>
+                            </li>
+                            <li class="dropdown-submenu">
+                                <a href="#" data-toggle="dropdown" class="dropdown-toggle">Directorio de contacto</a>
+                                <ul class="d-menu" data-role="dropdown">
+                                    <li><a class="cargando" href="{{ path("_directorio_agregar",{'accion':'listar'}) }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir contacto</a></li>
+                                    {% if is_granted('ROLE_ESPECIALISTA_PRINCIPAL')%}
+                                        <li><a class="cargando" href="{{ path("_directorio_asignar_grupo_contactos_user") }}"><span class="glyphicon glyphicon-pencil"></span> Modificar propietarios </a></li>
+                                    {% endif %}
+                                    <li><a class="cargando" href="{{ path("_directorio_listar") }}"><span class="glyphicon glyphicon-list-alt"></span> Contactos p&uacute;blicos</a></li>
+                                    <li><a class="cargando" href="{{ path("_mi_directorio_listar",{'usuario_uci':app.user.username}) }}"><span class="glyphicon glyphicon-list-alt"></span> Mis contactos</a></li>
+                                </ul>
+                            </li>
+                            {% if app.user.plantilla=='plantillaComercial' or  app.user.plantilla=='plantillaAseguramiento' %}
+                                <li class="dropdown-submenu">
+                                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">Reserva del sal&oacute;n</a>
+                                    <ul class="d-menu" data-role="dropdown">
+                                        {% if is_granted('ROLE_COMERCIAL') or is_granted('ROLE_GESTOR')%}
+                                            <li><a class="cargando" href="{{ path("_reservacion_agregar") }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir reserva</a></li>
+                                        {% endif %}
+                                        <li><a class="cargando" href="{{ path("_reservacion_listar_anual") }}"><span class="glyphicon glyphicon-list-alt"></span> Reservas del sal&oacute;n {{ ''|date('Y') }}</a></li>
+                                        <li><a class="cargando" href="{{ path("_reservacion_listar") }}"><span class="glyphicon glyphicon-list-alt"></span> Reservas del sal&oacute;n</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown-submenu">
+                                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">Video Conferencia</a>
+                                    <ul class="d-menu" data-role="dropdown">
+                                        {% if  is_granted('ROLE_VIDEO_CONFERENCIA') %}
+                                            <li><a class="cargando" href="{{ path("video_conferencia_new") }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir Solicitud</a></li>
+                                        {% endif %}
+                                        <li><a class="cargando" href="{{ path("video_conferencia_index",{'elementos':""|date('Y')}) }}"><span class="glyphicon glyphicon-list-alt"></span> Solicitudes {{ ''|date('Y') }}</a></li>
+                                        <li><a class="cargando" href="{{ path("video_conferencia_index",{'elementos':'Registradas'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Solicitudes Registradas</a></li>
+                                    </ul>
+                                </li>
+                            {% endif %}
+
+                            {% if app.user.plantilla=='plantillaAseguramiento' and ( is_granted('ROLE_CONTROL_INTERNO_ADMINISTRADOR')or is_granted('ROLE_ACCION_CONTROL_INTERNO')or is_granted('ROLE_ESPECIALISTA_PRINCIPAL') or is_granted('ROLE_ADMINISTRADOR'))%}
+                                <li class="dropdown-submenu">
+                                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">Acción de Control Interno</a>
+                                    <ul class="d-menu" data-role="dropdown">
+                                        <li><a class="cargando" href="{{ path("accion_control_interno_new") }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir Acción</a></li>
+                                        <li><a class="cargando" href="{{ path('informe_accion_control_interno_new', {'accion': 'informe', 'id': 'null'}) }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir Informe</a></li>
+                                        <li><a class="cargando" href="{{ path("accion_control_interno_index",{'elementos':""|date('Y')}) }}"><span class="glyphicon glyphicon-list-alt"></span> Acciones {{ ''|date('Y') }}</a></li>
+                                        <li><a class="cargando" href="{{ path("informe_accion_control_interno_index",{'elementos':""|date('Y')}) }}"><span class="glyphicon glyphicon-list-alt"></span> Informes {{ ''|date('Y') }}</a></li>
+                                        <li><a class="cargando" href="{{ path("accion_control_interno_index",{'elementos':'Registradas'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Acciones Registradas</a></li>
+                                        <li><a class="cargando" href="{{ path("informe_accion_control_interno_index",{'elementos':'Registradas'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Informes Registradas</a></li>
+                                    </ul>
+                                </li>
+                            {% endif %}
+                            <li class="dropdown-submenu">
+                                <a href="#" data-toggle="dropdown" class="dropdown-toggle">Encuentros/Acuerdos</a>
+                                <ul class="d-menu" data-role="dropdown">
+                                    {% if is_granted('ROLE_ENCUENTRO_DTT')%}
+                                        <li><a class="cargando" href="{{ path("encuentro_dtt_new") }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir Encuentro</a></li>
+                                        <li><a class="cargando" href="{{ path("encuentro_acuerdo_new",{'accion':'plantilla','id':0}) }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir Acuerdo</a></li>
+                                    {% endif %}
+                                    <li><a class="cargando" href="{{ path("encuentro_dtt_index",{'elementos':""|date('Y')}) }}"><span class="glyphicon glyphicon-list-alt"></span> Encuentros {{ ''|date('Y') }}</a></li>
+                                    <li><a class="cargando" href="{{ path("encuentro_acuerdo_index",{'elementos':""|date('Y')}) }}"><span class="glyphicon glyphicon-list-alt"></span> Acuerdos {{ ''|date('Y') }}</a></li>
+                                    <li><a class="cargando" href="{{ path("encuentro_dtt_index",{'elementos':'registrados'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Encuentros registrados</a></li>
+                                    <li><a class="cargando" href="{{ path("encuentro_acuerdo_index",{'elementos':'registrados'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Acuerdos registrados</a></li>
+
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    {% if app.user.plantilla=='plantillaAseguramiento' %}
+                        <li class="divider-vertical"></li>
+                        <li class="dropdown">
+                            <a href="#"  data-toggle="dropdown" class="dropdown-toggle">Ficha Proveedor<b class="caret"></b></a>
+                            <ul class="d-menu" data-role="dropdown">
+                                {% if is_granted('ROLE_PROVEEDOR_ADMINISTRADOR') %}
+                                    <li><a class="cargando" href="{{ path('ficha_new', {'tipo': 'proveedor'}) }}"><span class="glyphicon glyphicon-plus"></span> Añadir ficha</a></li>
+                                {% endif %}
+                                {% if is_granted('ROLE_COMERCIAL') %}
+                                    <li><a class="cargando" href="{{ path("persona_crear", {'tipo': 'proveedor'}) }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir persona</a></li>
+                                {% endif %}
+                                <li><a class="cargando" href="{{ path('ficha_index', {'tipo': 'proveedor'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Fichas Proveedor</a></li>
+                                <li><a class="cargando" href="{{ path("usuario_cliente",{'tipo':'proveedor'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Distribuci&oacute;n de Proveedores</a></li>
+                                <li><a class="cargando" href="{{ path("persona_index", {'tipo': 'proveedor'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Personal de los Proveedores</a></li>
+                                {% if is_granted('ROLE_COMERCIAL') %}
+                                    <li><a class="cargando" href="{{ path("distribuir_cliente_usuario_user", {'tipo': 'proveedor'}) }}"><span class="glyphicon glyphicon-fullscreen"></span> Distribuir Proveedores</a></li>
+                                    <li ><a  class="cargando" href="{{ path("distribuir_grupo_cliente",{'tipo': 'proveedor'}) }}"><span class="glyphicon glyphicon-retweet"></span>  Asigar Proveedores disponibles</a></li>
+                                {% endif %}
+                                {% if is_granted('ROLE_ADMINISTRADOR') %}
+                                    <li><a class="cargando" href="{{ path('ficha_actualizar_campos', {'tipo': 'proveedor'}) }}"><span class="glyphicon glyphicon-export"></span> Actualizar valores generales</a></li>
+                                {% endif %}
+                                <li><a class="cargando" href="{{ path("ficha_dashboard",{'tipo': 'proveedor'}) }}"><span class="glyphicon glyphicon-dashboard"></span> Dashboard ficha</a></li>
+                            </ul>
+                        </li>
+                    {% endif %}
+                    <li class="divider-vertical"></li>
+                {% endif %}
+                <!--MENU Organizacion territorial-->
+                {% if app.user.plantilla=='plantillaAdministracion'%}
+                    <li class="dropdown">
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">Organización Territorial<b class="caret"></b></a>
+                        <ul class="d-menu" data-role="dropdown">
+                            <li class="dropdown-submenu">
+                                {% if is_granted('ROLE_ESPECIALISTA_PRINCIPAL')%}
+                            <li><a class="cargando" href="{{ path("_pais_agregar") }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir pa&iacute;s</a></li>
+                            <li><a class="cargando" href="{{ path("_provincia_agregar") }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir provincia</a></li>
+                            <li><a class="cargando" href="{{ path("_municipio_agregar") }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir municipio</a></li>
+                            {% endif %}
+                            <li><a class="cargando" href="{{ path("_paises_listar") }}"><span class="glyphicon glyphicon-list-alt"></span> Pa&iacute;ses</a></li>
+                            <li><a class="cargando" href="{{ path("_provincias_listar") }}"><span class="glyphicon glyphicon-list-alt"></span> Provincias</a></li>
+                            <li><a class="cargando" href="{{ path("_municipio_listar") }}"><span class="glyphicon glyphicon-list-alt"></span> Municipios</a></li>
+                            </li>
+                        </ul>
+                    </li>
+                    {% if is_granted('ROLE_ADMINISTRADOR') %}
+
+                        <li class="dropdown">
+                            <a data-toggle="dropdown" class="dropdown-toggle" href="#">Idiomas<b class="caret"></b></a>
+                            <ul class="d-menu" data-role="dropdown">
+                                <li class="dropdown-submenu">
+                                <li><a class="cargando" href="{{ path("idiomas_new") }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir </a></li>
+                                <li><a class="cargando" href="{{ path("idiomas_index") }}"><span class="glyphicon glyphicon-list-alt"></span> Idiomas</a></li>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="divider-vertical"></li>
+                        <li class="dropdown">
+                            <a data-toggle="dropdown" class="dropdown-toggle" href="#">Interfaces<b class="caret"></b></a>
+                            <ul class="d-menu" data-role="dropdown">
+                                <li class="dropdown-submenu">
+                                <li><a class="cargando" href="{{ path("interface_dtt_new") }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir </a></li>
+                                <li><a class="cargando" href="{{ path("interface_dtt_index") }}"><span class="glyphicon glyphicon-list-alt"></span> Interfaces</a></li>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="divider-vertical"></li>
+                        <li class="dropdown">
+                            <a data-toggle="dropdown" class="dropdown-toggle" href="#">Configuración<b class="caret"></b></a>
+                            <ul class="d-menu" data-role="dropdown">
+                                <li class="dropdown-submenu">
+                                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">Servidores Ldap</a>
+                                    <ul class="d-menu" data-role="dropdown">
+                                        <li><a class="cargando" href="{{ path('myldap_new') }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir </a></li>
+                                        <li><a class="cargando" href="{{ path('myldap_index') }}"><span class="glyphicon glyphicon-list-alt"></span> Registrados</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown-submenu">
+                                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">Usuario del sistema</a>
+                                    <ul class="d-menu" data-role="dropdown">
+                                        {% if is_granted('ROLE_ESPECIALISTA_PRINCIPAL')%}
+                                            <li><a class="cargando" href="{{ path("_usuario_agregar") }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir usuario</a></li>
+                                            <li><a class="cargando" href="{{ path("_roles_listar") }}"><span class="glyphicon glyphicon-list-alt"></span> Usuarios por roles </a></li>
+                                        {% endif %}
+                                        <li><a class="cargando" href="{{ path("_usuario_uci") }}"><span class="glyphicon glyphicon-list-alt"></span> Usuarios</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown-submenu">
+                                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">Áreas/Departamentos/Grupos</a>
+                                    <ul class="d-menu" data-role="dropdown">
+                                        <li><a class="cargando" href="{{ path('area_dep_grupo_new') }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir </a></li>
+                                        <li><a class="cargando" href="{{ path('area_dep_grupo_index') }}"><span class="glyphicon glyphicon-list-alt"></span> Registrados</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown-submenu">
+                                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">Cargos</a>
+                                    <ul class="d-menu" data-role="dropdown">
+                                        <li><a class="cargando" href="{{ path('usuario_cargo_new') }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir </a></li>
+                                        <li><a class="cargando" href="{{ path('usuario_cargo_index') }}"><span class="glyphicon glyphicon-list-alt"></span> Registrados</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown-submenu">
+                                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">Centros de Costos</a>
+                                    <ul class="d-menu" data-role="dropdown">
+                                        <li><a class="cargando" href="{{ path('centro_costo_new') }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir </a></li>
+                                        <li><a class="cargando" href="{{ path('centro_costo_index') }}"><span class="glyphicon glyphicon-list-alt"></span> Listar centros</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="cargando" href="{{ path('ip_server_show', {'id': '513ebbd0aa067ad664d012893b00d66b'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Ip Server</a>
+                                    <a class="cargando" href="{{ path('eliminar_cache', {'url':link}) }}"><span class="glyphicon glyphicon-list-alt"></span> Eliminar Cache</a>
+                                    <a class="cargando" href="{{ path('encabezado_pie_show', {'id': '513ebbd0aa067ad664d012893b00d66b'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Encabezado-Pie página</a>
+                                    <a class="cargando" href="{{ path('campopersonalizado_index') }}"><span class="glyphicon glyphicon-list-alt"></span> Campos Personalizados</a>
+                                </li>
+                            </ul>
+                        </li>
+                    {% endif %}
+                    <li class="divider-vertical"></li>
+                {% endif %}
+                <!--MENU Mercadotecnia-->
+                {% if app.user.plantilla=='plantillaComercial' or app.user.plantilla=='plantillaMercadotecnia'%}
+                    <li class="dropdown">
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#" title="Inteligencia Comercial">I. Comercial<b class="caret"></b></a>
+                        <ul class="d-menu" data-role="dropdown">
+                            <li class="dropdown-submenu">
+                                <a href="#" data-toggle="dropdown" class="dropdown-toggle">Centro de desarrollo o Área</a>
+                                <ul class="d-menu" data-role="dropdown" style="margin-left: -194% !important;width: 185px !important;">
+                                    {% if is_granted('ROLE_ESPECIALISTA_PRINCIPAL')%}
+                                        <li><a class="cargando" href="{{ path("_centro_agregar") }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir centro o área</a></li>
+                                        <li><a class="cargando" href="{{ path("_servicio_producto_agregar") }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir producto-Servicio</a></li>
+                                    {% endif %}
+                                    <li><a class="cargando" href="{{ path("_centro_listar") }}"><span class="glyphicon glyphicon-list-alt"></span> Centros o Áreas</a></li>
+                                    <li><a class="cargando" href="{{ path("_servicio_producto_listar") }}"><span class="glyphicon glyphicon-list-alt"></span> Productos-Servicios</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="divider-vertical"></li>
+                    {% if app.user.plantilla=='plantillaMercadotecnia' %}
+                        <li class="dropdown">
+                            <a data-toggle="dropdown" class="dropdown-toggle" href="#">Feria y Eventos<b class="caret"></b></a>
+                            <ul class="d-menu" data-role="dropdown">
+                                <li class="dropdown-submenu">
+                                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">Feria y Eventos</a>
+                                    <ul class="d-menu" data-role="dropdown">
+                                        {% if 'ROLE_FERIA_EVENTO' in  app.user.roles or is_granted('ROLE_ESPECIALISTA_PRINCIPAL')%}
+                                            <li><a class="cargando" href="{{ path('feriaevento_new') }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir </a></li>
+                                        {% endif %}
+                                        <li><a class="cargando" href="{{ path('feriaevento_index',{'elementos':''|date('Y')}) }}"><span class="glyphicon glyphicon-list-alt"></span> {{ ''|date('Y') }}</a></li>
+                                        <li><a class="cargando" href="{{ path('feriaevento_index',{'elementos':'Registradas'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Registradas</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown-submenu">
+                                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">Plan Transporte</a>
+                                    <ul class="d-menu" data-role="dropdown">
+                                        {% if 'ROLE_PLAN_TRANSPORTE' in  app.user.roles or 'ROLE_FERIA_EVENTO' in  app.user.roles or is_granted('ROLE_ESPECIALISTA_PRINCIPAL')%}
+                                            <li><a class="cargando" href="{{ path('plantransporte_new') }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir </a></li>
+                                        {% endif %}
+                                        <li><a class="cargando" href="{{ path('plantransporte_index',{'elementos':''|date('Y')}) }}"><span class="glyphicon glyphicon-list-alt"></span> {{ ''|date('Y') }}</a></li>
+                                        <li><a class="cargando" href="{{ path('plantransporte_index',{'elementos':'Registrados'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Registradas</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="divider-vertical"></li>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+
+            {% if app.user.plantilla=='plantillaAseguramiento'%}
+                <li class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">Ingresos-Gastos<b class="caret"></b></a>
+                    <ul class="d-menu" data-role="dropdown">
+                        {% if is_granted('ROLE_DIETA') or is_granted('ROLE_DIETA_ADMINISTRADOR') or is_granted('ROLE_ADMINISTRADOR')%}
+                            <li class="dropdown-submenu">
+                                <a href="#" data-toggle="dropdown" class="dropdown-toggle">Dieta</a>
+                                <ul class="d-menu" data-role="dropdown">
+                                    <li><a class="cargando" href="{{ path('dieta_new') }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir </a></li>
+                                    <li><a class="cargando" href="{{ path('dieta_index',{'elementos':''|date('Y')}) }}"><span class="glyphicon glyphicon-list-alt"></span> Dietas {{ ''|date('Y') }}</a></li>
+                                    <li><a class="cargando" href="{{ path('dieta_index',{'elementos':'Registradas'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Registradas</a></li>
+                                </ul>
+                            </li>
+                        {% endif %}
+                        {% if is_granted('ROLE_PARTIDA') %}
+                            <li class="dropdown-submenu">
+                                <a href="#" data-toggle="dropdown" class="dropdown-toggle">Partida</a>
+                                <ul class="d-menu" data-role="dropdown">
+                                    <li><a class="cargando" href="{{ path('partida_new') }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir </a></li>
+                                    <li><a class="cargando" href="{{ path('partida_index',{'elementos':''|date('Y')}) }}"><span class="glyphicon glyphicon-list-alt"></span> Partidas {{ ''|date('Y') }}</a></li>
+                                    <li><a class="cargando" href="{{ path('partida_index',{'elementos':'todas'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Registradas</a></li>
+                                </ul>
+                            </li>
+                        {% endif %}
+                        {% if  is_granted('ROLE_SOLICITUD_PAGO')%}
+                            <li class="dropdown-submenu">
+                                <a href="#" data-toggle="dropdown" class="dropdown-toggle">Solicitud Pago</a>
+                                <ul class="d-menu" data-role="dropdown">
+                                    <li><a class="cargando" href="{{ path('solicitudpago_new') }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir </a></li>
+                                    <li><a class="cargando" href="{{ path('solicitudpago_index',{'elementos':''|date('Y')}) }}"><span class="glyphicon glyphicon-list-alt"></span> Solicitudes {{ ''|date('Y') }}</a></li>
+                                    <li><a class="cargando" href="{{ path('solicitudpago_index',{'elementos':'Registradas'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Registradas</a></li>
+                                </ul>
+                            </li>
+                        {% endif %}
+                        {% if is_granted('ROLE_PARTIDA') %}
+                            <li class="dropdown-submenu">
+                                <a href="#" data-toggle="dropdown" class="dropdown-toggle">Operaciones-Partida</a>
+                                <ul class="d-menu" data-role="dropdown">
+                                    <li><a href="{{ path('partidamovimientos_new',{'accion':'Crédito'}) }}"><span class="glyphicon glyphicon-log-in"></span> Crédito </a></li>
+                                    <li><a href="{{ path('partidamovimientos_new',{'accion':'Débito'}) }}"><span class="glyphicon glyphicon-log-out"></span> Débito </a></li>
+                                    <li><a href="{{ path('partidamovimientos_new',{'accion':'Transferencia'}) }}"><span class="glyphicon glyphicon-transfer"></span> Transferencia </a></li>
+                                    <li><a href="{{ path('partidamovimientos_new',{'accion':'Donación'}) }}"><span class="glyphicon glyphicon-log-in"></span> Donación </a></li>
+                                    <li><a href="{{ path('partidamovimientos_new',{'accion':'Ajustar Plan'}) }}"><span class="glyphicon glyphicon-refresh"></span> Ajustar Plan </a></li>
+                                    <li><a href="{{ path('partidamovimientos_new',{'accion':'Operaciones'}) }}"><span class="glyphicon glyphicon-plus"></span> Operaciones Generales </a></li>
+                                    <li><a href="{{ path('partidamovimientos_index',{'elementos':''|date('Y')}) }}"><span class="glyphicon glyphicon-list-alt"></span> Operaciones {{ ''|date('Y') }}</a></li>
+                                    <li><a href="{{ path('partidamovimientos_index',{'elementos':'registradas'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Registradas</a></li>
+                                </ul>
+                            </li>
+                        {% endif %}
+
+                        {% if is_granted('ROLE_PAGO_MENOR')%}
+                            <li class="dropdown-submenu">
+                                <a href="#" data-toggle="dropdown" class="dropdown-toggle">Modelo Pago Menores</a>
+                                <ul class="d-menu" data-role="dropdown">
+                                    <li><a class="cargando" href="{{ path('modelo_pago_menor_new') }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir </a></li>
+                                    <li><a class="cargando" href="{{ path('modelo_pago_menor_index',{'elementos':''|date('Y')}) }}"><span class="glyphicon glyphicon-list-alt"></span> Solicitudes {{ ''|date('Y') }}</a></li>
+                                    <li><a class="cargando" href="{{ path('modelo_pago_menor_index',{'elementos':'Registradas'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Registradas</a></li>
+                                </ul>
+                            </li>
+                        {% endif %}
+                        {% if is_granted('ROLE_PAGO_TRANSPORTE')%}
+                            <li class="dropdown-submenu">
+                                <a href="#" data-toggle="dropdown" class="dropdown-toggle">Modelo Pago Transporte</a>
+                                <ul class="d-menu" data-role="dropdown">
+                                    <li><a class="cargando" href="{{ path('modelo_pago_transporte_new') }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir </a></li>
+                                    <li><a class="cargando" href="{{ path('modelo_pago_transporte_index',{'elementos':''|date('Y')}) }}"><span class="glyphicon glyphicon-list-alt"></span> Solicitudes {{ ''|date('Y') }}</a></li>
+                                    <li><a class="cargando" href="{{ path('modelo_pago_transporte_index',{'elementos':'Registradas'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Registradas</a></li>
+                                </ul>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </li>
+                <li class="divider-vertical"></li>
+            {% endif %}
+            {% if app.user.plantilla=='plantillaPlaneacionEstrategica' and ('ROLE_CONTROL_INTERNO_ADMINISTRADOR' in  app.user.roles or is_granted('ROLE_ESPECIALISTA_PRINCIPAL') or is_granted('ROLE_ADMINISTRADOR'))%}
+                <!--MENU Recursos humanos -->
+                <li class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">Recursos Humanos<b class="caret"></b></a>
+                    <ul class="d-menu" data-role="dropdown">
+                        <li class="dropdown-submenu">
+                            <a href="#" data-toggle="dropdown" class="dropdown-toggle">Prenominas</a>
+                            <ul class="d-menu" data-role="dropdown">
+                                <li><a class="cargando" href="{{ path("prenomina_new",{}) }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir Prenomina</a></li>
+                                <li><a class="cargando" href="{{ path('prenomina_index', {'elementos': ''|date('Y')}) }}"><span class="glyphicon glyphicon-list-alt"></span> Prenominas {{ ''|date('Y')}}</a></li>
+                                <li><a class="cargando" href="{{ path('prenomina_index', {'elementos': 'registradas'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Prenominas registradas</a></li>
+                                <li><a class="cargando" href="{{ path("prenomina_claves_new",{}) }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir Clave</a></li>
+                                <li><a class="cargando" href="{{ path("prenomina_claves_index",{}) }}"><span class="glyphicon glyphicon-list-alt"></span> Claves</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-submenu">
+                            <a href="#" data-toggle="dropdown" class="dropdown-toggle">Plan de Capacitación</a>
+                            <ul class="d-menu" data-role="dropdown">
+                                <li class="dropdown-submenu">
+                                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">Solicitudes de Diagnóstico</a>
+                                    <ul class="d-menu" data-role="dropdown">
+                                        <li><a class="cargando" href="{{ path("plan_capacitacion_diagnostico_new",{}) }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir Solicitud</a></li>
+                                        <li><a class="cargando" href="{{ path('plan_capacitacion_diagnostico_index', {'elementos': ''|date('Y')}) }}"><span class="glyphicon glyphicon-list-alt"></span> Solicitudes {{ ''|date('Y')}}</a></li>
+                                        <li><a class="cargando" href="{{ path('plan_capacitacion_diagnostico_index', {'elementos': 'Registradas'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Solicitudes registradas</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown-submenu">
+                                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">Solicitudes Capacitación</a>
+                                    <ul class="d-menu" data-role="dropdown">
+                                        {%if  is_granted('ROLE_PLAN_CAPACITACION_ADMINISTRADOR') %}<li><a class="cargando" href="{{ path("plan_capacitacion_solicitud_new",{}) }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir Solicitud</a></li>{% endif %}
+                                        <li><a class="cargando" href="{{ path('plan_capacitacion_solicitud_index', {'elementos': ''|date('Y')}) }}"><span class="glyphicon glyphicon-list-alt"></span> Solicitudes {{ ''|date('Y')}}</a></li>
+                                        <li><a class="cargando" href="{{ path('plan_capacitacion_solicitud_index', {'elementos': 'Registradas'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Solicitudes registradas</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown-submenu">
+                                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">Cursos de la Solicitud</a>
+                                    <ul class="d-menu" data-role="dropdown">
+                                        {%if  is_granted('ROLE_PLAN_CAPACITACION_ADMINISTRADOR') %}<li><a class="cargando" href="{{ path("plan_capacitacion_solicitudes_curso_new") }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir Curso</a></li>{% endif %}
+                                        <li><a class="cargando" href="{{ path('plan_capacitacion_solicitudes_curso_index', {'elementos': ''|date('Y')}) }}"><span class="glyphicon glyphicon-list-alt"></span> Cursos {{ ''|date('Y') }}</a></li>
+                                        <li><a class="cargando" href="{{ path('plan_capacitacion_solicitudes_curso_index', {'elementos': 'Registrados'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Cursos registrados</a></li>
+                                    </ul>
+                                </li>
+
+                            </ul>
+                        </li>
+                        <li class="dropdown-submenu">
+                            <a href="#" data-toggle="dropdown" class="dropdown-toggle">Licencias sin sueldo</a>
+                            <ul class="d-menu" data-role="dropdown">
+                                <li><a class="cargando" href="{{ path("_licencia_sin_sueldo_agregar",{}) }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir Registro</a></li>
+                                <li><a class="cargando" href="{{ path("_licencia_sin_sueldo_listar_anual") }}"><span class="glyphicon glyphicon-list-alt"></span> Registros del {{ ''|date('Y')}}</a></li>
+                                <li><a class="cargando" href="{{ path("_licencia_sin_sueldo_listar",{}) }}"><span class="glyphicon glyphicon-list-alt"></span> Todos los registros</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-submenu">
+                            <a href="#" data-toggle="dropdown" class="dropdown-toggle">Relación de Familiaridad</a>
+                            <ul class="d-menu" data-role="dropdown">
+                                <li><a class="cargando" href="{{ path("relacion_familiaridad_new",{}) }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir Registro</a></li>
+                                <li><a class="cargando" href="{{ path('relacion_familiaridad_index', {'elementos': 'x', 'f_fin': ''|date('Y-')~'12-31', 'f_inicio': ''|date('Y-')~'01-01'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Registros del {{ ''|date('Y')}}</a></li>
+                                <li><a class="cargando" href="{{ path('relacion_familiaridad_index', {'elementos': 'Registrados', 'f_fin': ''|date('Y-')~'12-31', 'f_inicio': ''|date('Y-')~'01-01'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Todos los registros</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-submenu">
+                            <a href="#" data-toggle="dropdown" class="dropdown-toggle">Registro Maternidad</a>
+                            <ul class="d-menu" data-role="dropdown">
+                                <li><a class="cargando" href="{{ path("registromaternidad_new",{}) }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir Registro</a></li>
+                                <li><a class="cargando" href="{{ path("registromaternidad_index",{'elementos':''|date('Y')}) }}"><span class="glyphicon glyphicon-list-alt"></span> Registros del {{ ''|date('Y')}}</a></li>
+                                <li><a class="cargando" href="{{ path("registromaternidad_index",{'elementos':'registrados',}) }}"><span class="glyphicon glyphicon-list-alt"></span> Todos los registros</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-submenu">
+                            <a href="#" data-toggle="dropdown" class="dropdown-toggle">Registro de Vacaciones</a>
+                            <ul class="d-menu" data-role="dropdown">
+                                <li><a class="cargando" href="{{ path("recursos_humanos_vacaciones_new",{}) }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir Registro</a></li>
+                                <li><a class="cargando" href="{{ path("recursos_humanos_vacaciones_index",{'elementos':''|date('Y')}) }}"><span class="glyphicon glyphicon-list-alt"></span> Registros del {{ ''|date('Y')}}</a></li>
+                                <li><a class="cargando" href="{{ path("recursos_humanos_vacaciones_index",{'elementos':'registrados',}) }}"><span class="glyphicon glyphicon-list-alt"></span> Todos los registros</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-submenu">
+                            <a href="#" data-toggle="dropdown" class="dropdown-toggle">Certificado Médicos</a>
+                            <ul class="d-menu" data-role="dropdown">
+                                <li><a class="cargando" href="{{ path("certificadomedico_new",{}) }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir Registro</a></li>
+                                <li><a class="cargando" href="{{ path("certificadomedico_index",{'elementos':''|date('Y')}) }}"><span class="glyphicon glyphicon-list-alt"></span> Registros del {{ ''|date('Y')}}</a></li>
+                                <li><a class="cargando" href="{{ path("certificadomedico_index",{'elementos':'registrados',}) }}"><span class="glyphicon glyphicon-list-alt"></span> Todos los registros</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-submenu">
+                            <a href="#" data-toggle="dropdown" class="dropdown-toggle">Entregas de Certificado Médicos</a>
+                            <ul class="d-menu" data-role="dropdown">
+                                <li><a class="cargando" href="{{ path("entregacertificadomedico_new",{}) }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir Registro</a></li>
+                                <li><a class="cargando" href="{{ path("entregacertificadomedico_index",{'elementos':''|date('Y')}) }}"><span class="glyphicon glyphicon-list-alt"></span> Registros del {{ ''|date('Y')}}</a></li>
+                                <li><a class="cargando" href="{{ path("entregacertificadomedico_index",{'elementos':'registrados',}) }}"><span class="glyphicon glyphicon-list-alt"></span> Todos los registros</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            {% endif%}
+            {% if app.user.plantilla=='plantillaAseguramiento' and (is_granted('ROLE_SOLICITUD_MATERIALES_ADMINISTRADOR') )%}
+                <!--MENU Recursos humanos -->
+                <li class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">Solicitud Materiales<b class="caret"></b></a>
+                    <ul class="d-menu" data-role="dropdown">
+                        <li class="dropdown-submenu">
+                            <a href="#" data-toggle="dropdown" class="dropdown-toggle">Almacén</a>
+                            <ul class="d-menu" data-role="dropdown">
+                                <li><a class="cargando" href="{{ path("almacen_new") }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir</a></li>
+                                <li><a class="cargando" href="{{ path("almacen_index") }}"><span class="glyphicon glyphicon-list-alt"></span> Almacenes</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-submenu">
+                            <a href="#" data-toggle="dropdown" class="dropdown-toggle">Productos</a>
+                            <ul class="d-menu" data-role="dropdown">
+                                <li><a class="cargando" href="{{ path("almacen_producto_new",{'id':0}) }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir</a></li>
+                                <li><a class="cargando" href="{{ path("almacen_producto_index") }}"><span class="glyphicon glyphicon-list-alt"></span> Productos</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-submenu">
+                            <a href="#" data-toggle="dropdown" class="dropdown-toggle">Solicitudes</a>
+                            <ul class="d-menu" data-role="dropdown">
+                                <li><a class="cargando" href="{{ path("solicitud_materiales_new_base") }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir Registro</a></li>
+                                <li><a class="cargando" href="{{ path("solicitud_materiales_varios_pdf") }}"><span class="glyphicon glyphicon-new-window"></span> Exportar varias SM</a></li>
+                                <li><a class="cargando" href="{{ path("solicitud_materiales_index",{'elementos':'vigentes'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Solicitudes Vigentes</a></li>
+                                <li><a class="cargando" href="{{ path("solicitud_materiales_index",{'elementos':'Registradas',}) }}"><span class="glyphicon glyphicon-list-alt"></span> Solicitudes</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            {% endif%}
+            {% if app.user.plantilla=='plantillaInterfaces' and (is_granted('ROLE_INTERFACES') )%}
+                <!--MENU Recursos humanos -->
+                <li class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">Ventas<b class="caret"></b></a>
+                    <ul class="d-menu" data-role="dropdown">
+                        <li class="dropdown-submenu">
+                            <a href="#" data-toggle="dropdown" class="dropdown-toggle">Plan Ventas</a>
+                            <ul class="d-menu" data-role="dropdown">
+                                <li><a class="cargando" href="{{ path("interface_plan_ventas_new") }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir</a></li>
+                                <li><a class="cargando" href="{{ path('interface_plan_ventas_index', {'elementos': 'vigentes'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Plan Ventas {{ ''|date('Y') }}</a></li>
+                                <li><a class="cargando" href="{{ path('interface_plan_ventas_index', {'elementos': 'registrados'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Plan Ventas Registrados</a></li>
+                                <li><a class="cargando" href="{{ path('interface_plan_venta_busqueda_avanzada', {'accion': 'all'}) }}"><span class="glyphicon glyphicon-search"></span> Búsqueda Avanzada</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li class="divider-vertical"></li>
+
+                <!--MENU Recursos humanos -->
+                <li class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">Recursos Humanos<b class="caret"></b></a>
+                    <ul class="d-menu" data-role="dropdown">
+                        <li class="dropdown-submenu">
+                            <a href="#" data-toggle="dropdown" class="dropdown-toggle">Modelo Autorización</a>
+                            <ul class="d-menu" data-role="dropdown">
+                                <li><a class="cargando" href="{{ path("interface_modelo_autorizacion_consultor_new") }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir</a></li>
+                                <li><a class="cargando" href="{{ path('interface_modelo_autorizacion_consultor_index', {'elementos': 'vigentes'}) }}"><span class="glyphicon glyphicon-list-alt"></span> {{ ''|date('Y') }}</a></li>
+                                <li><a class="cargando" href="{{ path('interface_modelo_autorizacion_consultor_index', {'elementos': 'registrados'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Registrados</a></li>
+                                {#                                                        <li><a class="cargando" href="{{ path('interface_plan_venta_busqueda_avanzada', {'accion': 'all'}) }}"><span class="glyphicon glyphicon-search"></span> Búsqueda Avanzada</a></li>#}
+                            </ul>
+                        </li>
+                        <li class="dropdown-submenu">
+                            <a href="#" data-toggle="dropdown" class="dropdown-toggle">Evaluación Desempeño</a>
+                            <ul class="d-menu" data-role="dropdown" style="margin-left: -175% !important;width: 185px !important;">
+                                <li class="dropdown-submenu">
+                                    <a href="#" data-toggle="dropdown" class="dropdown-toggle" >Indicadores</a>
+                                    <ul class="d-menu" data-role="dropdown"  style="margin-left: -164% !important;">
+                                        <li><a class="cargando" href="{{ path("interface_amed_indicador_new") }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir</a></li>
+                                        <li><a class="cargando" href="{{ path('interface_amed_indicador_index') }}"><span class="glyphicon glyphicon-list-alt"></span> Indicadores</a></li>
+                                        {#                                                        <li><a class="cargando" href="{{ path('interface_plan_venta_busqueda_avanzada', {'accion': 'all'}) }}"><span class="glyphicon glyphicon-search"></span> Búsqueda Avanzada</a></li>#}
+                                    </ul>
+                                </li>
+                                <li class="dropdown-submenu">
+                                    <a href="#" data-toggle="dropdown" class="dropdown-toggle" >Jefe de proyecto</a>
+                                    <ul class="d-menu" data-role="dropdown"  style="margin-left: -169% !important;">
+                                        <li><a class="cargando" href="{{ path("interface_amed_a_b_new", {'tipo': 'anexo1b'}) }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir</a></li>
+                                        <li><a class="cargando" href="{{ path('interface_amed_a_b_index', {'tipo': 'anexo1b'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Evaluaciones</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown-submenu">
+                                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">Miembros de proyecto</a>
+                                    <ul class="d-menu" data-role="dropdown" style="margin-left: -169% !important;">
+                                        <li><a class="cargando" href="{{ path("interface_amed_a_b_new", {'tipo': 'anexo1'}) }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir</a></li>
+                                        <li><a class="cargando" href="{{ path('interface_amed_a_b_index', {'tipo': 'anexo1'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Evaluaciones</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-submenu">
+                            <a href="#" data-toggle="dropdown" class="dropdown-toggle">Certificación P.Remuneración</a>
+                            <ul class="d-menu" data-role="dropdown" style="margin-left: -175% !important;width: 185px !important;">
+                                <li class="dropdown-submenu">
+                                    <a href="#" data-toggle="dropdown" class="dropdown-toggle" >Jefe de proyecto</a>
+                                    <ul class="d-menu" data-role="dropdown"  style="margin-left: -164% !important;">
+                                        <li><a class="cargando" href="{{ path("interface_cpago_remuneracion_new", {'tipo': 'anexo2a'}) }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir</a></li>
+                                        <li><a class="cargando" href="{{ path('interface_cpago_remuneracion_index', {'tipo': 'anexo2a'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Registrados</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown-submenu">
+                                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">Miembros de proyecto</a>
+                                    <ul class="d-menu" data-role="dropdown" style="margin-left: -164% !important;">
+                                        <li><a class="cargando" href="{{ path("interface_cpago_remuneracion_new", {'tipo': 'anexo2b'}) }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir</a></li>
+                                        <li><a class="cargando" href="{{ path('interface_cpago_remuneracion_index', {'tipo': 'anexo2b'}) }}"><span class="glyphicon glyphicon-list-alt"></span> Registrados</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-submenu">
+                            <a href="#" data-toggle="dropdown" class="dropdown-toggle">Informe Semestral del Proyecto</a>
+                            <ul class="d-menu" data-role="dropdown">
+                                <li><a class="cargando" href="{{ path("interface_informe_proyecto_new")}}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir</a></li>
+                                <li><a class="cargando" href="{{ path("interface_informe_proyecto_index") }}"><span class="glyphicon glyphicon-list-alt"></span> Registrados</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-submenu">
+                            <a href="#" data-toggle="dropdown" class="dropdown-toggle">Dictamen sobre certifico del Proyecto</a>
+                            <ul class="d-menu" data-role="dropdown">
+                                <li><a class="cargando" href="{{ path('interface_dictamen_proyecto_new') }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir</a></li>
+                                <li><a class="cargando" href="{{ path('interface_dictamen_proyecto_index') }}"><span class="glyphicon glyphicon-list-alt"></span> Registrados</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-submenu">
+                            <a href="#" data-toggle="dropdown" class="dropdown-toggle">Currículum Viate</a>
+                            <ul class="d-menu" data-role="dropdown">
+                                <li><a class="cargando" href="{{ path('interface_curriculum_vitae_new', {'fileDocumento': '0','mAutorizoC': '0'}) }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir</a></li>
+                                <li><a class="cargando" href="{{ path("interface_curriculum_vitae_importar") }}"><span class="glyphicon glyphicon-import"></span> Importar</a></li>
+                                {#                                                        <li><a class="cargando" href="{{ path('interface_curriculum_vitae_index', {'elementos': 'vigentes'}) }}"><span class="glyphicon glyphicon-list-alt"></span> {{ ''|date('Y') }}</a></li>#}
+                                <li><a class="cargando" href="{{ path('interface_curriculum_vitae_index')}}"><span class="glyphicon glyphicon-list-alt"></span> Registrados</a></li>
+                                <li><a class="cargando" href="{{ asset('assets/PlantillaCurriculumConsultores.xlsx')}}"><span class="glyphicon glyphicon-book"></span> Plantilla CV</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-submenu">
+                            <a href="#" data-toggle="dropdown" class="dropdown-toggle">Contratos</a>
+                            <ul class="d-menu" data-role="dropdown">
+                                {#                                                        <li><a class="cargando" href="{{ path('interface_contrato_new') }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir</a></li>#}
+                                <li><a class="cargando" href="{{ path('interface_contrato_index', {'elementos': 'vigentes'}) }}"><span class="glyphicon glyphicon-list-alt"></span> {{ ''|date('Y') }}</a></li>
+                                <li><a class="cargando" href="{{ path('interface_contrato_index', {'elementos': 'registrados'})}}"><span class="glyphicon glyphicon-list-alt"></span> Registrados</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-submenu">
+                            <a href="#" data-toggle="dropdown" class="dropdown-toggle">Reporte Horas</a>
+                            <ul class="d-menu" data-role="dropdown">
+                                <li><a class="cargando" href="{{ path('interface_reporte_horas_new') }}"><span class="glyphicon glyphicon-plus"></span> A&ntilde;adir</a></li>
+                                <li><a class="cargando" href="{{ path('interface_reporte_horas_index', {'elementos': 'vigentes'}) }}"><span class="glyphicon glyphicon-list-alt"></span> {{ ''|date('Y') }}</a></li>
+                                <li><a class="cargando" href="{{ path('interface_reporte_horas_index', {'elementos': 'registrados'})}}"><span class="glyphicon glyphicon-list-alt"></span> Registrados</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li class="divider-vertical"></li>
+
+            {% endif%}
+        </ul>
+    </div>
+{#{% endif %}#}

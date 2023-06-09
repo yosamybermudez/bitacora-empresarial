@@ -1,0 +1,110 @@
+{% extends '_themes/metroui/base.html.twig' %}
+
+{% block title %}Licencia{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid bg-white h-75 d-flex flex-align-center pt-3 pt-0-lg ">
+
+    <div class="container text-center">
+        {% if license.status == 'valid' %}
+            <h1 class="bg-green fg-white p-5 mif-checkmark"></h1>
+            <div class="text-leader fg-green">Licencia activa</div>
+        {% elseif license.status == 'overdue' %}
+            <h1 class="bg-red fg-white p-5 mif-cancel"></h1>
+            <div class="text-leader fg-red">Licencia vencida</div>
+        {% else %}
+            <h1 class="bg-red fg-white p-5 mif-cancel"></h1>
+            <div class="text-leader fg-red">Licencia no válida</div>
+        {% endif %}
+        <hr>
+        <table class="table text-left no-metro-ui striped">
+            <tr>
+                <td class="text-right text-bold">Inició</td>
+                <td class="text-left">{{ license.starts | fecha_es }} {{ license.starts | date('h:i:s a') }}</td>
+            </tr>
+            <tr>
+                <td class="text-right text-bold">Tipo</td>
+                <td class="text-left">{{ license.type == 'T' ? 'Temporal' : 'Permanente' }}</td>
+            </tr>
+            {% if license.end_date is defined %}
+            <tr>
+                <td class="text-right text-bold">Validez</td>
+                <td>{{ license.limit }}
+                    {% if license.limit == 1 %}
+                        {{ license.period == 'D' ? 'día' : license.period == 'M' ? 'mes' : 'año' }}
+                    {% else %}
+                        {{ license.period == 'D' ? 'días' : license.period == 'M' ? 'meses' : 'años' }}
+                    {% endif %}
+                </td>
+            </tr>
+                <tr>
+                    <td class="text-right text-bold">
+                        {% if "now" | date('YmdHis') > license.end_date | date('YmdHis') %} Venció {% else %} Vence {% endif %}
+                    </td>
+                    <td>{{ license.end_date | fecha_es }} {{ license.end_date | date('h:i:s a') }}</td>
+                </tr>
+            {% endif %}
+            <tr>
+                <td class="text-right text-bold">Suscrita a</td>
+                <td>{{ license.organization }}</td>
+            </tr>
+            <tr>
+                <td class="text-right text-bold">Código de solicitud</td>
+                <td>
+                    <script>
+                        var customButtons = [
+                            {
+                                html: "<span class='mif-copy'></span>",
+                                cls: "secondary",
+                                onclick: "copyToClipboard()"
+                            }
+                        ]
+                        function copyToClipboard() {
+
+                            // Highlight its content
+                            document.getElementById('request_code').select();
+
+                            // Copy the highlighted text
+                            document.execCommand("copy");
+
+                            document.getElementById('form_activation_code').focus();
+
+
+                        }
+                    </script>
+                    <input type="text"
+                           id="request_code"
+                           name="request_code"
+                           data-role="input"
+                           data-clear-button="false"
+                           value="{{ license.request_code }}"
+                           readonly="readonly"
+                           data-custom-buttons="customButtons">
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right text-bold">Código de activación</td>
+                <td>
+                    <script>
+                        var customButtons_2 = [
+                            {
+                                html: "<span class='mif-checkmark'></span>",
+                                cls: "success",
+                                onclick: "submit()"
+                            }
+                        ];
+                        function submit() {
+                            $('form#activation_form').submit();
+                        }
+                    </script>
+                    {{ form_start(form, { 'attr' : { 'id' : 'activation_form', 'data-role': 'validator' } }) }}
+                    {{ form_widget(form.activation_code) }}
+                    {{ form_end(form) }}
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

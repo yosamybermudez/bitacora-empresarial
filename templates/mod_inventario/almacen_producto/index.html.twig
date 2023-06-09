@@ -1,0 +1,67 @@
+{% extends '_themes/metroui/base.html.twig' %}
+
+{% block title %}Almacenes y productos{% endblock %}
+
+{% block content %}
+
+    <div class="d-flex flex-justify-between">
+        <h4>Almacenes y productos</h4>
+        <div class="d-flex flex-justify-between">
+            <div class="flex-self-center mr-2" style="width: 400px;">
+                {{ form_start(almacen_seleccion_form, { 'attr' : { 'data-role': 'validator' } }) }}
+
+                {{ form_widget(almacen_seleccion_form) }}
+
+                {{ form_end(almacen_seleccion_form) }}
+                <script>
+                    function submit_form() {
+                        $('form[name="form"]').submit();
+                    }
+                </script>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white p-3">
+        <table class="table no-check">
+            <thead>
+            <tr>
+                {% if not almacen_seleccionado %}
+                <th data-sortable="true" data-sort-dir="asc">Almacén</th>
+                {% endif %}
+                <th data-sortable="true" data-sort-dir="asc">Producto</th>
+                <th data-sortable="true" data-sort-dir="asc">U/M</th>
+                <th data-format="money" data-cls-column="text-right">Precio Compra CUP</th>
+                <th data-format="money" data-cls-column="text-right">Precio Compra MLC</th>
+                <th data-format="money" data-cls-column="text-right">Precio Venta CUP</th>
+                <th data-format="money" data-cls-column="text-right">Precio Venta MLC</th>
+                <th data-format="money" data-cls-column="text-right">Saldo contable</th>
+                <th data-format="money" data-cls-column="text-right">Saldo disponible</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for almacenProducto in almacenesProductos | filter(almacenProducto => almacenProducto.saldoContable > 0) %}
+                <tr>
+                    {% if not almacen_seleccionado %}
+                    <td>{{ almacenProducto.almacen.nombre }}</td>
+                    {% endif %}
+                    <td>{{ almacenProducto.producto.nombre }}</td>
+                    <td>{{ almacenProducto.producto.unidadMedida }}</td>
+                    <td>$ {{ almacenProducto.producto.precioCompraCup | number_format(2,'.','') }}</td>
+                    <td>$ {{ almacenProducto.producto.precioCompraMlc | number_format(2,'.','') }}</td>
+                    <td>$ {{ almacenProducto.producto.precioVentaCup | number_format(2,'.','') }}</td>
+                    <td>$ {{ almacenProducto.producto.precioVentaMlc | number_format(2,'.','') }}</td>
+                    <td>{{ almacenProducto.saldoContable | number_format(2,'.','') }}</td>
+                    <td>{{ almacenProducto.saldoDisponible | number_format(2,'.','') }}</td>
+                    <td>
+                        <a class="button primary" href="{{ path('app_mod_inventario_producto_show', {'id': almacenProducto.producto.id}) }}">
+                            <span class="mif-eye"></span>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

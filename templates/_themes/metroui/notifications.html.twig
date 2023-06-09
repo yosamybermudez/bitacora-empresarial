@@ -1,0 +1,44 @@
+<a id="notifications-toogle" href="#" class="app-bar-item no-marker">
+    <span class="mif-bell"></span>
+    <span id="notifications-count" class="badge bg-red fg-white mt-2 mr-1">{{ notificaciones | filter (notif => not notif.estado) | length }}</span>
+</a>
+<div id="notifications-container" class="d-menu bg-white border-none pos-absolute" data-role="collapse" style="width: auto; left: auto; right: 11.9rem;">
+    <div class="card-header border-none text-center p-2">
+        <h5 class="m-0">Notificaciones</h5>
+    </div>
+    <ul data-app-bar="true" data-role="materialtabs" data-fixed-tabs="true">
+        <li class="border-left-none"><a href="#no-leidas">No leídas</a></li>
+        <li class="border-left-none"><a href="#todas">Todas</a></li>
+    </ul>
+    <div class="card m-0 border-none">
+        <div class="card-content p-0 border-none">
+            <div id="no-leidas">
+                <div data-role="panel" class="border-none"
+                     data-width="500"
+                     style="max-height: 400px; overflow: auto; padding: 0px;"
+                >
+                    {% include('_themes/metroui/notifications.ul.feed-list.html.twig')  with {'notifications' : notificaciones, 'no_leidas' : true } %}
+                </div>
+            </div>
+            <div id="todas">
+                <div data-role="panel" class="border-none"
+                          data-width="500"
+                          style="max-height: 400px; overflow: auto; padding: 0px;"
+                >
+                    {% include('_themes/metroui/notifications.ul.feed-list.html.twig')  with {'notifications' : notificaciones} %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="card-footer p-0 border-top">
+
+        <a class="button border-top bg-default text-center w-50{% if notificaciones | length == 0 %}disabled{% endif %} %}" href="{{ path('_notificacion_listar', {'accion': '0', 'usuario': notificaciones[0].usuarioNotificar.usuariouci }) }}">Ver todas</a>
+        <a class="button border-top bg-default text-center w-50" href="#" id="notifications-all-leidas" data-href="{{ path('_marcar_leidas_todas_ajax', {'usuario' : notificaciones[0].usuarioNotificar.usuariouci }) }}">Marcar todas como leídas</a>
+    </div>
+</div>
+
+
+{#<div class="d-menu" data-role="dropdown">#}
+
+{#</div>#}

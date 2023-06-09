@@ -1,0 +1,7 @@
+{{ form_start(form, { 'attr' : { 'data-role': 'validator' } }) }}
+    {{ form_widget(form) }}
+<hr>
+<div class="d-flex flex-justify-end mt-4">
+    <button class="button primary">{{ button_label|default('Guardar') }}</button>
+</div>
+{{ form_end(form) }}

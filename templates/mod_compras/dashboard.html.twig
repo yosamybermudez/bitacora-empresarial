@@ -1,0 +1,60 @@
+{% extends 'mod_compras/_template.html.twig' %}
+
+{% set title = (tipo is not defined) ? 'Movimientos' : tipo | tipo_movimiento_identificador_plural_es %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <div class="d-flex flex-align-center p-2 bg-white mb-3">
+        {% if app.request.get('_route') != 'app_mod_inventario_movimiento_unconfirmed' %}
+            {% if tipo is defined and tipo is not null %}
+                <span class="ml-2 text-leader">Información general <b>{{ title }}</b><span class="text-bold">{{ fecha }}</span></span>
+            {% endif %}
+        {% else %}
+{#            <span class="ml-2 text-leader">Movimientos sin confirmar</span>#}
+{#            <div class="ml-auto">#}
+{#                <div class="dropdown-button">#}
+{#                    <button class="button dropdown-toggle"><span class="mif-add"></span> Nuevo</button>#}
+{#                    <ul class="d-menu place-right" data-role="dropdown">#}
+
+{#                            <li><a href="{{ path('') }}"><span class="mif-flash-on"></span>Venta rapida</a></li>#}
+{#                            <li><a href="{{ path('') }}"><span class="mif-flash-on"></span>Venta rapida</a></li>#}
+{#                            <li><a href="{{ path('') }}"><span class="mif-flash-on"></span>Venta rapida</a></li>#}
+{#                            <li><a href="{{ path('') }}"><span class="mif-flash-on"></span>Venta rapida</a></li>#}
+
+
+{#                    </ul>#}
+{#                </div>#}
+{#            </div>#}
+        {% endif %}
+    </div>
+    <script>
+        var options = [
+            {
+                html: "<span class='mif-list'></span>",
+                cls: "bg-darkCyan fg-white",
+                onclick: "window.location.replace('{{ path('app_mod_compras_dashboard') }}');"
+            }
+        ];
+    </script>
+    <div class="row">
+        <div class="cell-md-8">
+            <div data-role="panel"
+                 data-title-caption="Compras"
+                 data-title-icon="<span class='mif-shopping-basket'></span>"
+                 data-custom-buttons="options"
+            >
+                {% include 'mod_compras/_table.html.twig' %}
+            </div>
+        </div>
+        <div class="cell-md-4">
+            <div data-role="panel" class="h-100"
+                 data-title-caption="Otros datos a definir"
+                 data-title-icon="<span class='mif-shopping-basket'></span>">
+                ...
+            </div>
+        </div>
+
+
+    </div>
+{% endblock %}

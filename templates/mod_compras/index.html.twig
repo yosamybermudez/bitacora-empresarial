@@ -1,0 +1,41 @@
+{% extends 'mod_compras/_template.html.twig' %}
+
+{% set title = (tipo is not defined) ? 'Movimientos' : tipo | quitar_underscore | capitalize %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <div data-role="panel" class="mb-3">
+        <div class="d-flex flex-align-center bg-white">
+            <a href="{{ path('app_mod_compras_dashboard') }}" title="Volver al tablero"
+               class="button square outline"><span class="mif-arrow-left"></span></a>
+            {% if tipo is defined and tipo is not null %}
+                <span class="ml-2 text-leader">Listado general <b>Compras</b></span>
+                {#            {% else %}#}
+                {#                <span class="ml-2 text-leader">Todos los movimientos <span class="text-bold">{{ fecha }}</span></span>#}
+                <div class="ml-auto d-flex">
+                    {% if fecha is defined and fecha %}
+                        <div class="mr-1 m-0 px-2 p-0 remark info">
+                            <div class="pos-center">Fecha: <b>{{ fecha }}</b></div>
+                        </div>
+                    {% endif %}
+                    <div>
+                        <a href="{{ path('app_mod_compras_list', {}) }}" title="Ver todos los resultados"
+                           class="button secondary square"><span class="mif-open-book"></span></a>
+                        <a href="{{ path('app_mod_compras_list', {'fecha' : fecha | date_modify("-1 day") | date('Ymd')}) }}"
+                           title="Día anterior" class="button square"><span class="mif-arrow-left"></span></a>
+                        <a href="{{ path('app_mod_compras_list', {'fecha' : fecha | date('Ymd')}) }}" title="Hoy"
+                           class="button square"><span class="mif-calendar"></span></a>
+                        <a href="{{ path('app_mod_compras_list', {'fecha' : fecha | date_modify("+1 day") | date('Ymd')}) }}"
+                           title="Día siguiente"
+                           class="button square {% if fecha | date_modify("+1 day") | date > "now" | date %}disabled{% endif %}"><span
+                                    class="mif-arrow-right"></span></a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <div data-role="panel">
+        {% include 'mod_compras/_table.html.twig' %}
+    </div>
+{% endblock %}

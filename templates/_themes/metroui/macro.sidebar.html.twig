@@ -1,0 +1,29 @@
+{% macro render_node(enlace) %}
+    {% if enlace %}
+        {% if enlace.roles | has_access or enlace.roles == [] %}
+        <li>
+
+            {% if enlace.bloqueado %}
+                <a class="c-not-allowed">
+            {% else %}
+                <a  href="{{ enlace.enlace }}" class="enlace{% if enlace.submodulos | length > 0 %} dropdown-toggle{% endif %}" {% if enlace.esModulo != '' %}onclick="loadingModule()"{% elseif enlace.enlace != '' %}onclick="loading()"{% endif %}>
+            {% endif %}
+                <span class="icon"><span class="{% if not enlace.bloqueado %} {{ enlace.mifIcon }} {% else %} mif-lock {% endif %}"></span></span>
+                <span class="caption">{{ enlace.nombre }}</span>
+            </a>
+            {% if enlace.enlaceAgregarNuevo is defined and enlace.enlaceAgregarNuevo %}
+                <a class="button bg-blue fg-white cycle mini pos-absolute pos-right-center mr-2" href="{{ enlace.enlaceAgregarNuevo }}" onclick="loading()">
+                    <span class="mif-add"></span>
+                </a>
+            {% endif %}
+            {% if enlace.submodulos | length > 0 %}
+                <ul class="navview-menu stay-open" data-role="dropdown">
+                    {% for submodulo in enlace.submodulos %}
+                        {{ _self.render_node(submodulo) }}
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </li>
+        {% endif %}
+    {% endif %}
+{% endmacro %}

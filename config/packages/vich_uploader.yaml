@@ -1,0 +1,39 @@
+vich_uploader:
+    db_driver: orm
+
+    mappings:
+        plantillas:
+            uri_prefix: assets/templates
+            upload_destination: '%kernel.project_dir%/public/assets/templates'
+            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+            inject_on_load: false
+            delete_on_remove: true
+
+        documento_adjunto:
+            uri_prefix: uploads/documentos
+            upload_destination: '%kernel.project_dir%/public/uploads/documentos'
+            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+            inject_on_load: false
+            delete_on_remove: true
+
+        organizacion_logo:
+            uri_prefix: uploads/organizacion/logos
+            upload_destination: '%kernel.project_dir%/public/uploads/organizacion/logos'
+            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+            inject_on_load: false
+            delete_on_update: true
+            delete_on_remove: true
+
+        usuario_foto:
+            uri_prefix: uploads/usuario/fotos
+            upload_destination: '%kernel.project_dir%/public/uploads/usuario/fotos'
+            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+            inject_on_load: false
+            delete_on_update: true
+            delete_on_remove: true
+
+    #mappings:
+    #    products:
+    #        uri_prefix: /images/products
+    #        upload_destination: '%kernel.project_dir%/public/images/products'
+    #        namer: Vich\UploaderBundle\Naming\SmartUniqueNamer

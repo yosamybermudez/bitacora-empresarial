@@ -1,0 +1,79 @@
+{% extends 'mod_inventario/_template.html.twig' %}
+
+{% block title %}Productos{% endblock %}
+
+
+{% block content %}
+
+    <div class="d-flex flex-align-center p-2 bg-white mb-3">
+        <span class="ml-2 text-leader">Productos</span>
+        <div class="ml-auto">
+            <a class="button primary flex-self-center" href="{{ path('app_mod_inventario_producto_new') }}" title="Nuevo producto">
+                <span class="mif-add"></span>
+            </a>
+        </div>
+    </div>
+
+    <div class="bg-white p-3">
+        <table class="table no-check">
+            <thead>
+            <tr>
+                <th data-sortable="true" data-sort-dir="asc">Nombre</th>
+                <th>U/M</th>
+                <th>Ubicaciones</th>
+                <th data-format="money" data-cls-column="text-right">Precio compra CUP</th>
+                <th data-format="money" data-cls-column="text-right">Precio compra MLC</th>
+                <th data-format="money" data-cls-column="text-right">Precio venta CUP</th>
+                <th data-format="money" data-cls-column="text-right">Precio venta MLC</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for producto in productos %}
+                <tr>
+                    <td>
+                        {{ producto.nombre }}
+                        {% if not producto.activo %}
+                            <code class="alert">inactivo</code>
+                        {% endif %}
+                    </td>
+                    <td>{{ producto.unidadMedida }}</td>
+                    <td>
+                        {% for almacenProducto in producto.almacenProductos %}
+                            <a href="{{ path('app_mod_inventario_almacen_show', {'id': almacenProducto.almacen.id}) }}">
+                                <code class="primary">{{ almacenProducto.almacen.nombre }} - {{ almacenProducto.saldoContable }}</code>
+                            </a>
+                        {% endfor %}
+                    </td>
+                    <td>$ {{ producto.precioCompraCup | number_format(2,'.','') }}</td>
+                    <td>$ {{ producto.precioCompraMlc | number_format(2,'.','') }}</td>
+                    <td>$ {{ producto.precioVentaCup | number_format(2,'.','') }}</td>
+                    <td>$ {{ producto.precioVentaMlc | number_format(2,'.','') }}</td>
+                    <td>
+                        <div class="toolbar float-right">
+                            <a title="Mostrar" class="tool-button primary" href="{{ path('app_mod_inventario_producto_show', {'id': producto.id}) }}">
+                                <span class="mif-eye"></span>
+                            </a>
+                            <a title="Editar" class="tool-button secondary" href="{{ path('app_mod_inventario_producto_edit', {'id': producto.id}) }}">
+                                <span class="mif-pencil"></span>
+                            </a>
+                            <a title="Duplicar" class="tool-button info" href="{{ path('app_mod_inventario_producto_duplicate', {'id': producto.id}) }}">
+                                <span class="mif-copy"></span>
+                            </a>
+                            {% if producto.activo %}
+                                <a title="Inhabilitar" class="tool-button alert" href="{{ path('app_mod_inventario_producto_toggle', {'id': producto.id}) }}">
+                                    <span class="mif-event-busy"></span>
+                                </a>
+                            {% else %}
+                                <a title="Habilitar" class="tool-button success" href="{{ path('app_mod_inventario_producto_toggle', {'id': producto.id}) }}">
+                                    <span class="mif-event-available"></span>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

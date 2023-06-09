@@ -1,0 +1,51 @@
+{% extends '_themes/metroui/base.html.twig' %}
+
+{% block title %}Clientes / Proveedores{% endblock %}
+
+{% block content %}
+
+    <div class="d-flex flex-justify-between mb-3">
+        <h4>Clientes / Proveedores</h4>
+        <div class="d-flex flex-justify-between ">
+            <a class="button primary flex-self-center" href="{{ path('app_cliente_proveedor_new') }}">Nuevo</a>
+        </div>
+    </div>
+
+    <div class="bg-white p-3">
+        <table class="table no-check">
+            <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Contacto(s)</th>
+                <th>Teléfono(s)</th>
+                <th>Correo electrónico</th>
+                <th>Domicilio</th>
+                <th>¿Cliente?</th>
+                <th>¿Proveedor?</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for cliente_proveedor in cliente_proveedors %}
+                <tr>
+                    <td>{{ cliente_proveedor.nombre }}</td>
+                    <td>--</td>
+                    <td>{{ cliente_proveedor.telefonos }}</td>
+                    <td>{{ cliente_proveedor.correosElectronicos }}</td>
+                    <td>{{ cliente_proveedor.domicilio }}</td>
+                    <td>{{ cliente_proveedor.esCliente ? 'Si' : 'No' }}</td>
+                    <td>{{ cliente_proveedor.esProveedor ? 'Si' : 'No' }}</td>
+                    <td>
+                        <a class="button primary" href="{{ path('app_cliente_proveedor_show', {'id': cliente_proveedor.id}) }}">
+                            <span class="mif-eye"></span>
+                        </a>
+                        <a class="button secondary" href="{{ path('app_cliente_proveedor_edit', {'id': cliente_proveedor.id}) }}">
+                            <span class="mif-pencil"></span>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

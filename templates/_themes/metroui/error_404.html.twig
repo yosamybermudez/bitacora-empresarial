@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="shortcut icon" href="{{ asset('assets/metroui/images/favicon_indigo.ico') }}" type="image/x-icon">
+    <!-- Metro 4 -->
+    <link rel="stylesheet" href="{{ asset('assets/metroui/vendors/metro4/css/metro-all.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/metroui/css/index.css') }}">
+
+    <title>Factura</title>
+</head>
+<body class="m4-cloak h-vh-100 d-flex flex-justify-center flex-align-center">
+
+<div class="login-box">
+    <div class="bg-white p-3">
+        <div class="container text-center">
+
+            <img src="{{ asset('assets/metroui/images/error.png') }}" class="w-50">
+
+            <div class="h1 text-center m-8">¡Error!</div>
+
+            <div class="text-leader2 text-center page-error-box mx-auto w-100">
+                {{ app.request.cookies.get('mensaje') }}
+                <br>Mientras tanto, puede volver a la <a href="{{ app.request.cookies.get('url_actual') }}">página anterior</a> o al <a href="{{ path('app_principal') }}">inicio</a>.
+            </div>
+        </div>
+        <hr>
+        <div class="text-leader2 text-center page-error-box mx-auto w-100">
+            Enlace denegado: <a href="{{ app.request.cookies.get('url_actual') }}">
+                {{ app.request.cookies.get('url_actual') }}
+            </a>
+        </div>
+        <hr>
+        <div class="text-center">
+            <div class="dialog" data-role="dialog" id="errorDialog">
+                <div class="dialog-title">Descripción del error</div>
+                <div class="dialog-content">
+                    <div>
+                        {{ app.request.cookies.get('code') }}
+                    </div>
+                    {% if app.request.cookies.get('file') is defined %}
+                        <hr>
+                        <div>
+                            {{ app.request.cookies.get('file') }} : {{ app.request.cookies.get('line') }}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="dialog-actions">
+                    <button class="button js-dialog-close">Cerrar</button>
+                </div>
+            </div>
+            <button class="button primary mt-3"
+                    onclick="Metro.dialog.open('#errorDialog')">Para el desarrollador</button>
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<script src="{{ asset('assets/metroui/vendors/jquery/jquery-3.4.1.min.js') }}"></script>
+<script src="{{ asset('assets/metroui/vendors/metro4/js/metro.min.js') }}"></script>
+<script>
+    function invalidForm(){
+        var form  = $(this);
+        form.addClass("ani-ring");
+        setTimeout(function(){
+            form.removeClass("ani-ring");
+        }, 1000);
+    }
+</script>
+</body>
+</html>

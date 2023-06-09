@@ -1,0 +1,12 @@
+<div data-role="panel" class="secondary text-secondary">
+    <div class="d-flex">
+        <div class="ml-6">
+            <div class="text-bold">Registro</div>
+            <div>{{ entity.creadoPor.nombreCompleto }} , {{ entity.creadoEn | date('d-m-Y h:i:s a') }}</div>
+        </div>
+        <div class="ml-6">
+            <div class="text-bold">Ultima actualización</div>
+            <div>{{ entity.actualizadoPor.nombreCompleto }}, {{ entity.actualizadoEn | date('d-m-Y h:i:s a') }}</div>
+        </div>
+    </div>
+</div>

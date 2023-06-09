@@ -1,0 +1,90 @@
+{% extends '_themes/metroui/base.html.twig' %}
+
+{% set title = app.request.get('_route') | get_action ~ ' usuario' %}
+
+{% if app.request.get('_route') == 'app_usuario_change_password' and app.user == usuario %}
+    {% set title = 'Cambiar mi contraseña' %}
+{% endif %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    {{ form_start(form, { 'attr' : { 'data-role': 'validator' } }) }}
+    <div class="d-flex flex-align-center p-2 bg-white mb-3">
+        <a href="{{ path('app_usuario_index') }}" class="button square outline"><span class="mif-arrow-left"></span></a>
+        <span class="ml-2 text-leader">{{ title }}
+            {% if app.request.get('_route') != 'app_usuario_new' and title != 'Cambiar mi contraseña' %}
+            <span class="text-bold">
+                {{ usuario.userIdentifier }}
+            </span>
+            {% endif %}
+        </span>
+        <div class="ml-auto">
+            <button type="submit" title="Guardar" class="button square primary"><span class="mif-checkmark"></span></button>
+        </div>
+
+    </div>
+    {% if app.request.get('_route') != 'app_usuario_change_password' %}
+        <div class="bg-white p-3">
+            <div class="row">
+                <div class="cell-md-3">
+                    {{ form_row(form.username) }}
+                </div>
+                <div class="cell-md-3">
+
+                </div>
+                {% if form.password is defined %}
+                <div class="cell-md-3">
+                    {{ form_row(form.password) }}
+                </div>
+                <div class="cell-md-3">
+                    {{ form_row(form.confirm_password) }}
+                </div>
+                {% endif %}
+            </div>
+{#            {% if app.user != usuario %}#}
+            <div class="row">
+                <div class="cell-md-12">
+                    {{ form_row(form.fotoFile) }}
+                </div>
+            </div>
+{#            {% endif %}#}
+            <div class="row">
+                <div class="cell-md-6">
+                    {{ form_row(form.activo) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="cell-md-12">
+                    {{ form_row(form.roles) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="cell-md-4">
+                    {{ form_row(form.nombres) }}
+                </div>
+                <div class="cell-md-4">
+                    {{ form_row(form.apellidos) }}
+                </div>
+                <div class="cell-md-4">
+                    {{ form_row(form.cargo) }}
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="bg-white p-3">
+            <div class="row">
+                {% if form.password is defined %}
+                    <div class="cell-md-3">
+                        {{ form_row(form.password) }}
+                    </div>
+                    <div class="cell-md-3">
+                        {{ form_row(form.confirm_password) }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+    {{ form_row(form._token) }}
+    {{ form_end(form, {'render_rest' : false }) }}
+{% endblock %}

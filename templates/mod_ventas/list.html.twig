@@ -1,0 +1,39 @@
+{% extends 'mod_ventas/_template.html.twig' %}
+
+{% set title = (tipo is not defined) ? 'Movimientos' : tipo | quitar_underscore | capitalize %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <div class="bg-white p-3">
+        <div class="d-flex flex-align-center bg-white">
+            <a href="{{ path('app_mod_ventas_dashboard') }}" title="Volver al tablero"
+               class="button square outline"><span class="mif-arrow-left"></span></a>
+            {% if tipo is defined and tipo is not null %}
+                <span class="ml-2 text-leader">Listado general <b>{{ tipo }}</b></span>
+                {#            {% else %}#}
+                {#                <span class="ml-2 text-leader">Todos los movimientos <span class="text-bold">{{ fecha }}</span></span>#}
+                <div class="ml-auto d-flex">
+                    {% if fecha is defined and fecha %}
+                        <div class="mr-1 m-0 px-2 p-0 remark info">
+                            <div class="pos-center">Fecha: <b>{{ fecha }}</b></div>
+                        </div>
+                    {% endif %}
+                    <div>
+                        {% if siglas == 'VEN' %}
+                            <a class="button primary flex-self-center" href="{{ path('app_mod_ventas_movimiento_salida_venta_new') }}">Registrar venta</a>
+                            <a class="button primary flex-self-center" href="{{ path('app_mod_ventas_movimiento_salida_venta_rapida_new') }}">Registrar venta rápida</a>
+                        {% elseif siglas == 'DVC' %}
+
+                        {% elseif siglas == 'DVP' %}
+
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="bg-white p-3">
+        {% include 'mod_ventas/_table.html.twig' %}
+    </div>
+{% endblock %}

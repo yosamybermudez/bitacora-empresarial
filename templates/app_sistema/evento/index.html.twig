@@ -1,0 +1,35 @@
+{% extends '_themes/metroui/base.html.twig' %}
+
+{% set title = 'Eventos del sistema' %}
+
+{% block content %}
+    <div class="d-flex flex-align-center p-2 bg-white mb-3">
+        <span class="ml-2 text-leader">{{ title }}</span>
+    </div>
+    <div class="bg-white p-3">
+        <table class="table no-check">
+            <thead>
+            <tr>
+                <th>Fecha de registro</th>
+                <th>Nivel</th>
+                <th>Tipo</th>
+                <th>Descripción</th>
+                <th>Origen</th>
+                <th>Registrado por</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for evento in eventos %}
+                <tr>
+                    <td>{{ evento.registradoEn | date('d-m-Y h:i:s a') }}</td>
+                    <td>{{ evento.nivel }}</td>
+                    <td>{{ evento.tipo }}</td>
+                    <td>{{ evento.descripcion }}</td>
+                    <td>{{ evento.origen }}</td>
+                    <td>{{ evento.registradoPor.userIdentifier }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

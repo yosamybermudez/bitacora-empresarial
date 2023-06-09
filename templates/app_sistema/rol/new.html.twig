@@ -1,0 +1,19 @@
+{% extends '_themes/metroui/base.html.twig' %}
+
+{% block title %}{{ app.request.get('_route') | get_action }} rol{% endblock %}
+
+{% block content %}
+    {{ form_start(form, { 'attr' : { 'data-role': 'validator' } }) }}
+    <div class="d-flex flex-align-center p-2 bg-white mb-3">
+        <a href="{{ path('app_usuario_index') }}" class="button square outline"><span class="mif-arrow-left"></span></a>
+        <span class="ml-2 text-leader">Datos del rol <span class="text-bold">{{ rol.nombre }}</span></span>
+        <div class="ml-auto">
+            <button type="submit" title="Guardar" class="button square primary"><span class="mif-checkmark"></span></button>
+        </div>
+
+    </div>
+    <div class="bg-white p-3">
+        {{ form_widget(form) }}
+    </div>
+    {{ form_end(form) }}
+{% endblock %}

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="shortcut icon" href="{{ asset('assets/metroui/images/favicon_indigo.ico') }}" type="image/x-icon">
+    <!-- Metro 4 -->
+    <link rel="stylesheet" href="{{ asset('assets/metroui/vendors/metro4/css/metro-all.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/metroui/css/index.css') }}">
+
+    <title>bitácora | Reestablecer sistema</title>
+</head>
+<body class="m4-cloak h-vh-100 d-flex flex-justify-center flex-align-center">
+
+{{ form_start(form, { 'attr' : { 'data-role': 'validator', 'onsubmit' : 'loading()' } }) }}
+<div class="row">
+    <div class="cell-md-12">
+        <div class="bg-white p-3 d-flex flex-justify-between">
+            <h3 class="mb-0 text-center">Reestablecer sistema</h3>
+            <div>
+                <a class="button" href="{{ path('app_login') }}">Cancelar</a>
+                <button class="button primary" type="submit" onclick="return confirm('¿Está seguro que desea reestablecer el sistema? Los cambios realizados no podrán ser revertidos')">Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="cell-md-12 h-100">
+        <div class="bg-white p-3">
+            <h5>Clave</h5>
+            <div class="remark info">
+                Hay datos registrados previamente en el sistema. Debe especificar la clave secreta para poder reestablecer
+            </div>
+            <div class="row">
+                <div class="cell-md-12">
+                    {{ form_row(form.clave) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{ form_end(form) }}
+<script src="{{ asset('assets/metroui/vendors/jquery/jquery-3.4.1.min.js') }}"></script>
+<script src="{{ asset('assets/metroui/vendors/metro4/js/metro.min.js') }}"></script>
+<script>
+    function invalidForm(){
+        var form  = $(this);
+        form.addClass("ani-ring");
+        setTimeout(function(){
+            form.removeClass("ani-ring");
+        }, 1000);
+    }
+</script>
+<script>
+    function loading() {
+        Metro.activity.open({
+            type: 'square',
+            overlayColor: '#fff',
+            overlayAlpha: 0.9,
+            text: '<div class=\'mt-2 text-small\'>Por favor, espere ...</div>',
+            overlayClickClose: false
+        });
+    }
+</script>
+</body>
+</html>

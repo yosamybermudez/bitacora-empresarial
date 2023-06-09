@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contrato{% endblock %}
+
+{% block body %}
+    <h4>Contrato</h4>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ contrato.id }}</td>
+            </tr>
+            <tr>
+                <th>NombreEntidad</th>
+                <td>{{ contrato.nombreEntidad }}</td>
+            </tr>
+            <tr>
+                <th>Cliente</th>
+                <td>{{ contrato.cliente ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>Proveedor</th>
+                <td>{{ contrato.proveedor ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>PersonasContacto</th>
+                <td>{{ contrato.personasContacto }}</td>
+            </tr>
+            <tr>
+                <th>TelefonosContacto</th>
+                <td>{{ contrato.telefonosContacto }}</td>
+            </tr>
+            <tr>
+                <th>DireccionContacto</th>
+                <td>{{ contrato.direccionContacto }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_contrato_index') }}">back to list</a>
+
+    <a href="{{ path('app_contrato_edit', {'id': contrato.id}) }}">edit</a>
+
+    {{ include('contrato/_delete_form.html.twig') }}
+{% endblock %}

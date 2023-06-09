@@ -1,0 +1,33 @@
+{#<div class="pos-absolute">#}
+{#    <ul class="d-menu" data-role="dropdown" data-toggle-element="#dropdown_toggle">#}
+{#        {% for modulo in modulos %}#}
+{#            <li>#}
+{#                <a href="{{ modulo.enlace }}" class="button text-left bg-lightGray w-100 button-link">{{ modulo.nombre }}</a>#}
+{#            </li>#}
+{#        {% endfor %}#}
+{#    </ul>#}
+{#</div>#}
+{#<h3 class="m-0 pl-3" id="context_toggle">#}
+{#    <span class="mif-apps"></span>#}
+{#    Apps#}
+{#</h3>#}
+{#<ul class="d-menu context" data-role="dropdown" data-toggle-element="#context_toggle">#}
+{#    {% for modulo in modulos %}#}
+{#        <li class="sub-header m-0">#}
+{#            <a href="{{ modulo.enlace }}" class="button text-left bg-lightGray w-100">{{ modulo.nombre }}</a>#}
+{#        </li>#}
+{#    {% endfor %}#}
+{#</ul>#}
+<div class="pos-relative">
+    <h3 class="m-0 pl-3 dropdown-toggle">
+        <span class="mif-apps"></span>
+        Apps
+    </h3>
+    <ul class="d-menu drop-right" data-role="dropdown">
+        {% for modulo in modulos %}
+            <li>
+                <a href="{{ modulo.enlace }}">{{ modulo.nombre }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+</div>

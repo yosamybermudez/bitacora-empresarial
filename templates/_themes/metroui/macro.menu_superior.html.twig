@@ -1,0 +1,17 @@
+{% macro render_node(enlace) %}
+<li>
+    <a href="{{ enlace.enlace }}" class="
+       {% if enlace.submodulos | length > 0 %}
+            dropdown-toggle
+       {% endif %}
+    ">{{ enlace.nombre }}</a>
+
+    {% if enlace.submodulos | length > 0 %}
+        <ul class="d-menu context" data-role="dropdown">
+            {% for submodulo in enlace.submodulos %}
+                {{ _self.render_node(submodulo) }}
+            {% endfor %}
+        </ul>
+    {% endif %}
+</li>
+{% endmacro %}

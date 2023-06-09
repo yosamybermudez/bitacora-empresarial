@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="shortcut icon" href="{{ asset('assets/metroui/images/favicon_indigo.ico') }}" type="image/x-icon">
+    <!-- Metro 4 -->
+    <link rel="stylesheet" href="{{ asset('assets/metroui/vendors/metro4/css/metro-all.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/metroui/css/index.css') }}">
+
+    <title>bitácora | Registrar licencia</title>
+</head>
+<body class="m4-cloak h-vh-100 d-flex flex-justify-center flex-align-center">
+
+<div class="bg-white p-5 container text-center">
+    {% if license.status == 'valid' %}
+        <h1 class="bg-green fg-white p-5 mif-checkmark"></h1>
+        <div class="text-leader fg-green">Licencia activa</div>
+    {% elseif license.status == 'overdue' %}
+        <h1 class="bg-red fg-white p-5 mif-cancel"></h1>
+        <div class="text-leader fg-red">Licencia vencida</div>
+        <hr>
+        <div class="remark alert">
+            La licencia expiró el <b>{{ license.end_date | fecha_es }}</b>
+            {% set aditional = license.end_date | date_modify('+30 days') | date('YmdHis') %}
+            {% set now = "now" | date('YmdHis') %}
+            {% if now > aditional %}
+                . No podrá acceder al sistema hasta que no especifique una licencia válida.
+            {% else %}
+                , puede usar el sistema por 30 adicionales <b>(hasta el {{ aditional | fecha_es }})</b>. Posterior a esto no tendrá acceso hasta que no especifique una licencia válida.
+            {% endif %}
+            Contacte con el desarrollador y facilítele el <b>Código de solicitud</b>.
+        </div>
+        <div class="text-center mb-4">
+{#            <form name="login" action="{{ path('app_login') }}" method="post">#}
+                <a type="submit" class="button primary" href="{{ path('app_login', {'extra' : true}) }}">Iniciar sesión</a>
+{#            </form>#}
+        </div>
+
+    {% else %}
+        <h1 class="bg-red fg-white p-5 mif-cancel"></h1>
+        <div class="text-leader fg-red">Licencia no válida</div>
+    {% endif %}
+    <hr>
+    <table class="table text-left no-metro-ui striped">
+        {% if license.starts is defined %}
+            <tr>
+                <td class="text-right text-bold">Inició</td>
+                <td class="text-left">{{ license.starts | fecha_es }} {{ license.starts | date('h:i:s a') }}</td>
+            </tr>
+        {% endif %}
+        {% if license.type is defined %}
+        <tr>
+            <td class="text-right text-bold">Tipo</td>
+            <td class="text-left">{{ license.type == 'T' ? 'Temporal' : 'Permanente' }}</td>
+        </tr>
+        {% endif %}
+        {% if license.end_date is defined %}
+            <tr>
+                <td class="text-right text-bold">Validez</td>
+                <td>{{ license.limit }}
+                    {% if license.limit == 1 %}
+                        {{ license.period == 'D' ? 'día' : license.period == 'M' ? 'mes' : 'año' }}
+                    {% else %}
+                        {{ license.period == 'D' ? 'días' : license.period == 'M' ? 'meses' : 'años' }}
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right text-bold">
+                    {% if "now" | date('YmdHis') > license.end_date | date('YmdHis') %} Venció {% else %} Vence {% endif %}
+                </td>
+                <td>{{ license.end_date | fecha_es }} {{ license.end_date | date('h:i:s a') }}</td>
+            </tr>
+        {% endif %}
+        {% if license.organization is defined %}
+        <tr>
+            <td class="text-right text-bold">Suscrita a</td>
+            <td>{{ license.organization }}</td>
+        </tr>
+        {% endif %}
+        <tr>
+            <td class="text-right text-bold">Código de solicitud</td>
+            <td>
+                <script>
+                    var customButtons = [
+                        {
+                            html: "<span id='copy' title='Copiar código a portapapeles' class='mif-copy'></span>",
+                            cls: "secondary",
+                            onclick: "copyToClipboard()",
+                        }
+                    ];
+                    function copyToClipboard() {
+
+                        // Highlight its content
+                        document.getElementById('request_code').select();
+
+                        // Copy the highlighted text
+                        document.execCommand("copy");
+
+                        document.getElementById('form_activation_code').focus();
+
+
+                    }
+                </script>
+                <input type="text"
+                       id="request_code"
+                       name="request_code"
+                       data-role="input"
+                       data-clear-button="false"
+                       value="{{ license.request_code }}"
+                       readonly="readonly"
+                       data-custom-buttons="customButtons">
+            </td>
+        </tr>
+        <tr>
+            <td class="text-right text-bold">Código de activación</td>
+            <td>
+                <script>
+                    var customButtons_2 = [
+                        {
+                            html: "<span class='mif-checkmark'></span>",
+                            cls: "success",
+                            onclick: "submit()"
+                        }
+                    ];
+                    function submit() {
+                        $('form#activation_form').submit();
+                    }
+                </script>
+                {{ form_start(form, { 'attr' : { 'id' : 'activation_form', 'data-role': 'validator' } }) }}
+                {{ form_widget(form.activation_code) }}
+                {{ form_end(form) }}
+            </td>
+        </tr>
+    </table>
+</div>
+<script src="{{ asset('assets/metroui/vendors/jquery/jquery-3.4.1.min.js') }}"></script>
+<script src="{{ asset('assets/metroui/vendors/metro4/js/metro.min.js') }}"></script>
+<script src="{{ asset('assets/metroui/js/metroui.component.hint.js') }}"></script>
+<script>
+    function invalidForm(){
+        var form  = $(this);
+        form.addClass("ani-ring");
+        setTimeout(function(){
+            form.removeClass("ani-ring");
+        }, 1000);
+    }
+</script>
+<script>
+
+    function loading() {
+        Metro.activity.open({
+            type: 'square',
+            overlayColor: '#fff',
+            overlayAlpha: 0.9,
+            text: '<div class=\'mt-2 text-small\'>Por favor, espere ...</div>',
+            overlayClickClose: false
+        });
+    }
+</script>
+</body>
+</html>

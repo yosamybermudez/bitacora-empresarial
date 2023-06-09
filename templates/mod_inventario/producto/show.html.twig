@@ -1,0 +1,170 @@
+{% extends 'mod_inventario/_template.html.twig' %}
+
+{% set title = app.request.get('_route') | get_action ~ 'producto' %}
+
+{% block top_styles %}
+    <link rel="stylesheet" href="{{ asset('assets/metroui/css/ecommerce.less') }}">
+{% endblock %}
+
+{% block content %}
+
+    <div class="d-flex flex-align-center p-2 bg-white mb-3">
+        <a href="{{ path('app_mod_inventario_producto_index') }}" class="button square outline"><span class="mif-arrow-left"></span></a>
+        <span class="ml-2 text-leader">{{ title }} <span class="text-bold">{{ producto.nombre }}</span></span>
+
+        <div class="ml-auto">
+            <a title="Nuevo" href="{{ path('app_mod_inventario_producto_new') }}" class="button square primary"><span class="mif-add"></span></a>
+            <a title="Editar" href="{{ path('app_mod_inventario_producto_edit', {'id' : producto.id }) }}" class="button square secondary"><span class="mif-pencil"></span></a>
+            <a title="Duplicar" href="{{ path('app_mod_inventario_producto_duplicate', {'id' : producto.id }) }}" class="button square info"><span class="mif-copy"></span></a>
+        </div>
+    </div>
+
+    <div class="d-flex flex-align-center p-2 bg-white mb-3">
+        <div class="w-100">
+            {{ form_start(form) }}
+            {{ form_row(form.producto) }}
+            {{ form_end(form) }}
+        </div>
+        <script>
+            function submit_form() {
+                $('form[name="form"]').submit();
+            }
+        </script>
+    </div>
+
+    <div class="row">
+        <div class="cell-md-6">
+            <div data-role="panel" class="p-3 h-100">
+                <div>
+                    <h5>Unidad de medida</h5>
+                    <div>{{ producto.unidadMedida }}</div>
+                    {% if producto.descripcion %}
+                        <h5>Descripción</h5>
+                        <div>{{ producto.descripcion }}</div>
+                    {% endif %}
+                    <h5>Precios</h5>
+                    <table class="table striped row-hover no-metro-ui mt-5">
+                        <thead>
+                        <th>Moneda</th>
+                        <th class="text-right">Precio de compra</th>
+                        <th class="text-right">Precio de venta</th>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>CUP</td>
+                            <td><span class="float-right">$ {{ producto.precioCompraCup | number_format(2,',','') }}</span></td>
+                            <td><span class="float-right">$ {{ producto.precioVentaCup | number_format(2,',','') }}</span></td>
+                        </tr>
+                        <tr>
+                            <td>MLC</td>
+                            <td><span class="float-right">$ {{ producto.precioCompraMlc | number_format(2,',','') }}</span></td>
+                            <td><span class="float-right">$ {{ producto.precioVentaMlc | number_format(2,',','') }}</span></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <br>
+                {% if movimientos %}
+                    <h5>Movimientos</h5>
+                    <table class="table striped compact no-metro-ui">
+                        {% set total = 0 %}
+                        {% for movimiento in movimientos | sort((m1, m2) => m1.creadoEn > m2.creadoEn) %}
+                            <tr>
+                                <td>
+                                    {% if movimiento.estado == 'Sin confirmar' %}
+                                        {% set bg = 'bg-cyan' %}
+                                    {% elseif movimiento.estado == 'Confirmado' %}
+                                        {% set bg = 'bg-green' %}
+                                    {% elseif movimiento.estado == 'Cancelado' %}
+                                        {% set bg = 'bg-red' %}
+                                    {% else %}
+                                        {% set bg = 'bg-gray' %}
+                                    {% endif %}
+
+                                    <code class="{{ bg }} fg-white ml-2">{{ movimiento.estado }}</code>
+                                </td>
+                                <td>{{ movimiento.creadoPor.nombreCompleto }}</td>
+                                <td>{{ movimiento.creadoEn | date('d-m-Y h:i:s a') }}</td>
+                                <td>
+                                    <a href="{{ path('app_mod_inventario_movimiento_show', {'id': movimiento.id }) }}">
+                                        {{ movimiento.codigo }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <div class="no-wrap">
+                                        {% if movimiento.estado != 'Cancelado' %}
+                                            {% if movimiento.codigo | tipo_movimiento in ['VEN', 'DEV', 'GAP'] %}
+                                                <span class="mif-arrow-down fg-red"></span>
+                                            {% elseif movimiento.codigo | tipo_movimiento in ['AJT'] %}
+                                                <span class="mif-refresh fg-lightBlue"></span>
+                                            {% elseif movimiento.codigo | tipo_movimiento in ['TRF'] %}
+                                                <span class="mif-checkmark fg-green"></span>
+                                            {% else %}
+                                                <span class="mif-arrow-up fg-green"></span>
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="mif-cross fg-red"></span>
+                                        {% endif %}
+                                        {% if movimiento.codigo | tipo_movimiento not in ['TRF'] %}
+                                            <span>{{ movimiento.cantidad }}</span>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                {% endif %}
+            </div>
+        </div>
+        <div class="cell-md-6">
+            <div data-role="panel" class="p-3 h-100">
+                <h5>Existencias</h5>
+                <table class="table striped row-hover no-metro-ui">
+                    {% if producto.almacenProductos | length > 0 %}
+                    <thead>
+                    <th>Almacén</th>
+                    <th>Cantidad</th>
+                    </thead>
+                    <tbody>
+                    {% endif %}
+                    {% set saldoContableTotal = 0 %}
+                    {% set saldoDisponibleTotal = 0 %}
+                    {% for almacenProducto in producto.almacenProductos %}
+                        {% set saldoContableTotal = saldoContableTotal + almacenProducto.saldoContable %}
+                        {% set saldoDisponibleTotal = saldoDisponibleTotal + almacenProducto.saldoDisponible %}
+                        <tr>
+                            <td>{{ almacenProducto.almacen.nombre }}</td>
+                            <td>{{ almacenProducto.saldoContable }}</td>
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        <td class="text-bold">Total</td>
+                        <td class="text-bold">{{ saldoContableTotal }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <br>
+                <div class="row">
+                    <div class="cell-md-6">
+                        <div class="icon-box">
+                            <div class="icon bg-cyan fg-white"><span class="mif-chart-line"></span></div>
+                            <div class="content bg-lightCyan p-4">
+                                <div class="text-upper">Saldo contable</div>
+                                <div class="text-upper text-bold text-lead">{{ saldoContableTotal }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cell-md-6">
+                        <div class="icon-box">
+                            <div class="icon bg-green fg-white"><span class="mif-chart-line"></span></div>
+                            <div class="content bg-lightGreen p-4">
+                                <div class="text-upper">Saldo disponible</div>
+                                <div class="text-upper text-bold text-lead">{{ saldoDisponibleTotal }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

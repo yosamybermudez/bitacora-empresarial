@@ -1,0 +1,32 @@
+<ul class="feed-list p-0">
+    {% if no_leidas is defined and notifications | filter (notif => not notif.estado) | length == 0 %}
+        <li id="no-leidas-empty" class="p-0 text-center">No hay notificaciones que mostrar</li>
+    {% endif %}
+    {% if notifications | length > 0 %}
+        {% for notif in notifications %}
+            {% set class = "" %}
+            {% if notif.estado %}
+                {% set class = "bg-lightGray" %}
+                {% if no_leidas is defined %}
+                    {% set class = class ~ " hide-notification" %}
+                {% endif %}
+            {% endif %}
+            <li class="d-flex {{ class }}" data-href="{{ path('_marcar_notificacion_ajax', {'id_notificacion': notif.idNotificacion}) }}" data-location="{{ path('_marcar_leida_notificacion', {'id_notificacion': notif.idNotificacion,'url':'false'}) }}">
+                    {% if notif.usuarioCrea.foto != '' and  notif.usuarioCrea.foto is not null and (asset('assets/images/usuarios') ~ '/' ~ notif.usuarioCrea.foto )|remote_file_exists%}
+                        <img  class="avatar border-50 mark-as-unread" style="width: 50px; height: 50px;" src="{{ asset('assets/images/usuarios') }}/{{  notif.usuarioCrea.foto }}">
+                    {% else %}
+                        <img  class="avatar border-50 mark-as-unread" style="width: 50px; height: 50px;" src="{{ asset('assets/images/usuarios/generic_metroui.jpg') }}">
+                    {% endif %}
+                    <div style="margin-left: 80px; margin-right: 50px;">
+                        <span class="label"><strong>{{ notif.usuarioCrea.nombreApellidos }}</strong> {{ notif.mensaje }}</span>
+                        <span class="second-label mt-2 notification-status">{{ notif.fechaCreada | date('d-m-Y') }}</span>
+                    </div>
+                    <span class="second-action read-notification border-50 bg-blue {% if notif.estado %}no-visible{% endif %}" style="width: 10px; height: 10px;"></span>
+                    <span title="Marcar como no leído" class="second-action mark-as-unread border-50 {% if not notif.estado %}no-visible{% endif %}" style="width: 10px; height: 10px;"></span>
+
+            </li>
+        {% endfor %}
+    {% else %}
+        <li id="no-leidas-empty" class="p-0 text-center">No hay notificaciones que mostrar</li>
+    {% endif %}
+</ul>

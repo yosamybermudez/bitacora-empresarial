@@ -1,0 +1,48 @@
+{% extends 'mod_rec_humanos/_template.html.twig' %}
+
+{% set title = 'Ajustes' %}
+
+{% block title %}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    <div class="d-flex flex-align-center p-2 bg-white mb-3">
+        <span class="ml-2 text-leader">{{ title }}</span>
+    </div>
+
+    <div class="bg-white p-3">
+        <div data-role="accordion" data-material="true">
+            {% for enlace in enlaces %}
+            <div class="frame">
+                <div class="heading"><h4>{{ enlace.nombre }}</h4></div>
+                <div class="content">
+                    <div class="row">
+                       <ul class="items-list w-100">
+                           {% for subenlace in enlace.submodulos %}
+                               <li>
+                                   <a href="{{ subenlace.enlace }}">{{ subenlace.nombre }}</a>
+                               </li>
+                           {% endfor %}
+                       </ul>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            <div class="frame">
+                <div class="heading">Header 2</div>
+                <div class="content">
+                    <div class="p-2">Wildly open a starship. Belay, ye small wench- set...</div>
+                </div>
+            </div>
+            <div class="frame">
+                <div class="heading">Header 3</div>
+                <div class="content">
+                    <div class="p-2">Bitter turkey can be made tasty by brushing with...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {#    {% include '_includes/metroui.datos_primarios.html.twig' %}#}
+{% endblock %}

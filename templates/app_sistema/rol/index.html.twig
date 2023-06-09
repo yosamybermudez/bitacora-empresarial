@@ -1,0 +1,41 @@
+{% extends '_themes/metroui/base.html.twig' %}
+
+{% block title %}Roles{% endblock %}
+
+{% block content %}
+    <div class="d-flex flex-align-center p-2 bg-white mb-3">
+        <span class="ml-2 text-leader">Roles</span>
+    </div>
+    <div class="bg-white p-3">
+        <table class="table no-check">
+            <thead>
+            <tr>
+                <th>Nombre</th>
+                {% if is_granted('ROLE_ADMINISTRADOR_SISTEMA') %}
+                    <th>Identificador</th>
+                {% endif %}
+                <th>Descripción</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for rol in rols %}
+                <tr>
+                    <td>{{ rol.nombre }}</td>
+                    {% if is_granted('ROLE_ADMINISTRADOR_SISTEMA') %}
+                        <td>{{ rol.identificador }}</td>
+                    {% endif %}
+                    <td>{{ rol.descripcion }}</td>
+                    <td>
+                        <div class="toolbar float-right">
+                            <a title="Editar" class="tool-button secondary" href="{{ path('app_rol_edit', {'id': rol.id}) }}">
+                                <span class="mif-pencil"></span>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

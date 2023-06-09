@@ -1,0 +1,65 @@
+{% extends 'mod_inventario/_template.html.twig' %}
+
+{% set title = app.request.get('_route') | get_action ~ 'almacén' %}
+
+{% block content %}
+
+    <div class="d-flex flex-align-center p-2 bg-white mb-3">
+        <a href="{{ path('app_mod_inventario_almacen_index') }}" class="button square outline"><span class="mif-arrow-left"></span></a>
+        <span class="ml-2 text-leader">{{ title }} <span class="text-bold">{{ almacen.nombre }}</span></span>
+
+        {% if is_granted('ROLE_GESTOR') %}
+        <div class="ml-auto">
+            <a title="Nuevo" href="{{ path('app_mod_inventario_almacen_new') }}" class="button square primary"><span class="mif-add"></span></a>
+            <a title="Editar" href="{{ path('app_mod_inventario_almacen_edit', {'id' : almacen.id }) }}" class="button square secondary"><span class="mif-pencil"></span></a>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="d-flex flex-align-center p-2 bg-white mb-3">
+        <div class="w-100">
+            {{ form_start(form) }}
+            {{ form_row(form.almacen) }}
+            {{ form_end(form) }}
+        </div>
+        <script>
+            function submit_form() {
+                $('form[name="form"]').submit();
+            }
+        </script>
+    </div>
+
+    <div class="row">
+        <div class="cell-md-6">
+            <div data-role="panel" class="p-3 h-100">
+                <h5>Nombre</h5>
+                <div>{{ almacen.nombre }}</div>
+                {% if almacen.descripcion %}
+                <h5>Descripción</h5>
+                <div>{{ almacen.descripcion }}</div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="cell-md-6">
+            <div data-role="panel" class="p-3 h-100">
+                <h5>Productos</h5>
+                <table class="table no-check">
+                    <thead>
+                    <th>Producto</th>
+                    <th>Saldo contable</th>
+                    <th>Saldo disponible</th>
+                    </thead>
+                    <tbody>
+                    {% for almacen_producto in almacen_productos %}
+                        <tr>
+                            <td>{{ almacen_producto.producto.nombre }}</td>
+                            <td>{{ almacen_producto.saldoContable }}</td>
+                            <td>{{ almacen_producto.saldoDisponible }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

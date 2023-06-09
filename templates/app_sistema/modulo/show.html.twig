@@ -1,0 +1,9 @@
+{% extends '_themes/metroui/base.html.twig' %}
+
+{% set moduloSeleccionado = modulo.identificador %}
+
+{% block title %}Módulo {{ modulo.nombre }}{% endblock %}
+
+{% block content %}
+    <h1>Hello {{ modulo.nombre }} ✅</h1>
+{% endblock %}

@@ -1,0 +1,153 @@
+{% extends 'mod_ventas/_template.html.twig' %}
+
+{% macro agregarFilaAlmacenProductoMovimiento(almacen_producto_movimiento_form) %}
+    <tr class="almacen-producto-movimiento-fila">
+        <td>{{ form_widget(almacen_producto_movimiento_form.almacen_producto) }}</td>
+        <td>{{ form_widget(almacen_producto_movimiento_form.precioCupVigente) }}</td>
+        <td>{{ form_widget(almacen_producto_movimiento_form.precioMlcVigente) }}</td>
+        <td><span class="almacen_producto_max text-center"></span></td>
+        <td>{{ form_widget(almacen_producto_movimiento_form.cantidad) }}</td>
+        <td>{{ form_widget(almacen_producto_movimiento_form.eliminar) }}</td>
+    </tr>
+{% endmacro %}
+
+{% import _self as macro %}
+
+{% block title %}{{ app.request.get('_route') | get_action }} movimiento{% endblock %}
+
+{% block content %}
+    {{ form_start(form, { 'attr' : { 'data-role': 'validator' } }) }}
+    <div class="d-flex flex-align-center p-2 bg-white mb-3">
+        <span class="ml-2 text-leader">Datos del movimiento <span class="text-bold">Venta {% if rapida is defined %} rápida {% endif %} de productos</span></span>
+        <div class="ml-auto">
+            <button type="submit" name="save_add_new" class="button secondary mr-2">{{ button_label|default('Guardar y agregar otro') }}</button>
+            <button type="submit" name="save_confirm_add_new" class="button secondary mr-2">{{ button_label|default('Guardar, confirmar y agregar otro') }}</button>
+            <button type="submit" name="save_confirm" class="button secondary mr-2">{{ button_label|default('Guardar y confirmar') }}</button>
+            <button type="submit" name="save" class="button secondary mr-2">{{ button_label|default('Guardar') }}</button>
+            <a title="Cancelar" class="button alert flex-self-center" href="{{ path('app_mod_inventario_movimiento_tipo_index', {'tipo' : 'ventas'}) }}">
+                <span class="mif-cross"></span>
+            </a>
+        </div>
+    </div>
+    <div class="bg-white p-3">
+        <div class="row">
+            <div class="cell-md-4 h-100">
+                <h5>Datos generales</h5>
+                {% if form.codigo is defined %}{{ form_row(form.codigo) }}{% endif %}
+                {% if form.fecha is defined %}{{ form_row(form.fecha) }}{% endif %}
+                {% if form.cliente is defined %}{{ form_row(form.cliente) }}{% endif %}
+                {% if form.formaPago is defined %}{{ form_row(form.formaPago) }}{% endif %}
+                {% if form.descripcion is defined %}{{ form_row(form.descripcion) }}{% endif %}
+            </div>
+            <div class="cell-md-8 h-100 pl-6">
+                <h5>Productos asociados</h5>
+                <table class="table no-fields no-metro-ui">
+                    <thead>
+                    <tr>
+                        <th width="60%">Producto</th>
+                        <th width="10%">Precio CUP</th>
+                        <th width="10%">Precio MLC</th>
+                        <th width="10%">Máx</th>
+                        <th width="10%">Cantidad</th>
+                        <th>
+                            <button type="button" class="button" id="almacen-producto-movimiento-fila-agregar">
+                                <span class="mif-add"></span>
+                            </button>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody id="almacen-producto-movimiento-contenedor" data-prototype="{{ macro.agregarFilaAlmacenProductoMovimiento(form.almacen_producto_movimientos.vars.prototype)|e('html_attr') }}">
+                    {% for almacen_producto_movimiento in form.almacen_producto_movimientos %}
+                        {{ macro.agregarFilaAlmacenProductoMovimiento(almacen_producto_movimiento) }}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% if rapida is defined and not rapida %}
+            <div class="row">
+                <div class="cell-md-12">
+                    <h5>Otros datos</h5>
+                    {{ include('_includes/metroui.entregado_transportado_recibido.html.twig') }}
+                </div>
+            </div>
+        {% endif %}
+
+    </div>
+    {{ form_end(form) }}
+{% endblock %}
+
+{% block bottom_scripts %}
+    <script>
+        $(document).on('change', 'select.almacen_producto_nombre', function () {
+            var item = $(this);
+            var input = item.closest('.almacen-producto-movimiento-fila').find('input.almacen_producto_cantidad');
+            var precioCup_input = item.closest('.almacen-producto-movimiento-fila').find('input.almacen_producto_precio_cup_vigente');
+            var precioMlc_input = item.closest('.almacen-producto-movimiento-fila').find('input.almacen_producto_precio_mlc_vigente');
+            var max = item.closest('.almacen-producto-movimiento-fila').find('span.almacen_producto_max');
+            input.focus();
+            var saldoDisponible = $('option:selected', item).attr('data-saldo-disponible');
+            var precioCup = $('option:selected', item).attr('data-precio-cup');
+            var precioMlc = $('option:selected', item).attr('data-precio-mlc');
+
+            input.attr('data-validate', 'required number min=0 max=' + saldoDisponible);
+            max.html(saldoDisponible);
+
+            precioCup_input.attr('data-validate', 'required number min=0');
+            precioCup_input.val(precioCup);
+            precioMlc_input.attr('data-validate', 'required number min=0');
+            precioMlc_input.val(precioMlc);
+        });
+
+        {% if rapida is defined and rapida %}
+        $(document).ready(function () {
+            var allSelect = $('select.almacen_producto_nombre');
+            allSelect.each(function () {
+                var item = $(this);
+                var input = item.closest('.almacen-producto-movimiento-fila').find('input.almacen_producto_cantidad');
+                var precioCup_input = item.closest('.almacen-producto-movimiento-fila').find('input.almacen_producto_precio_cup_vigente');
+                var precioMlc_input = item.closest('.almacen-producto-movimiento-fila').find('input.almacen_producto_precio_mlc_vigente');
+                var max = item.closest('.almacen-producto-movimiento-fila').find('span.almacen_producto_max');
+                input.focus();
+                var saldoDisponible = $('option:selected', item).attr('data-saldo-disponible');
+                var precioCup = $('option:selected', item).attr('data-precio-cup');
+                var precioMlc = $('option:selected', item).attr('data-precio-mlc');
+
+                input.attr('data-validate', 'required number min=0 max=' + saldoDisponible);
+                max.html(saldoDisponible);
+
+                precioCup_input.attr('data-validate', 'required number min=0');
+                precioMlc_input.attr('data-validate', 'required number min=0');
+                {% if app.request.get('_route') != 'app_mod_inventario_movimiento_venta_rapida_edit' %}
+                    precioCup_input.val(precioCup);
+                    precioMlc_input.val(precioMlc);
+                {% endif %}
+            });
+        });
+        {% endif %}
+        // $(document).on('click', 'button[type="submit"]', function (e) {
+        //     e.preventDefault();
+        //     var selects = $('select[name^="movimiento_venta[almacen_producto_movimientos]"]');
+        //     var array = [];
+        //     selects.each(function () {
+        //         var value = $('option:selected', $(this)).text();
+        //         array.push(value);
+        //     });
+        //
+        //     var nombresArray = array.sort();
+        //
+        //     var duplicados = [];
+        //     for (var i = 0; i < nombresArray.length - 1; i++) {
+        //         if (nombresArray[i + 1] == nombresArray[i]) {
+        //             duplicados.push(nombresArray[i]);
+        //         }
+        //     }
+        //     if(duplicados.length > 0){
+        //         alert('Existen productos repetidos');
+        //     } else {
+        //         $('form[name="movimiento_venta"]').submit();
+        //     }
+        // });
+    </script>
+{% endblock %}
+

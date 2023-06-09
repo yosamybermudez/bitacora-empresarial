@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->3
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="shortcut icon" href="{{ asset('assets/metroui/images/favicon_indigo.ico') }}" type="image/x-icon">
+    <!-- Metro 4 -->
+    <link rel="stylesheet" href="{{ asset('assets/metroui/vendors/metro4/css/metro-all.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/metroui/css/index.css') }}">
+
+    <title>bitácora | Inicializar sistema</title>
+</head>
+<body class="m4-cloak h-vh-100 d-flex flex-justify-center flex-align-center">
+
+<div class="login-box">
+
+    <div class="text-center">
+        <img src="{{ asset('assets/metroui/images/error.png') }}" class="w-75">
+        <h4>El sistema no se ha inicializado.</h4>
+        <a  href="{{ path('app_install_database_create_execute') }}" class="button primary mb-5" onclick="loading()">Inicializar sistema</a>
+        <script>
+            function loading() {
+                Metro.activity.open({
+                    type: 'square',
+                    overlayColor: '#fff',
+                    overlayAlpha: 0.9,
+                    text: '<div class=\'mt-2 text-small\'>Por favor, espere ...</div>',
+                    overlayClickClose: false
+                });
+            }
+        </script>
+    </div>
+</div>
+
+
+<script src="{{ asset('assets/metroui/vendors/jquery/jquery-3.4.1.min.js') }}"></script>
+<script src="{{ asset('assets/metroui/vendors/metro4/js/metro.min.js') }}"></script>
+</body>
+</html>
